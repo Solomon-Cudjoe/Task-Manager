@@ -1,5 +1,4 @@
 const { Schema, model } = require('mongoose');
-const taskSchema =  require('./task');
 
 const userSchema = new Schema({
     firstName: {
@@ -26,8 +25,7 @@ const userSchema = new Schema({
         type: Boolean,
         required: true,
         default: false
-    },
-    tasks: [taskSchema]
+    }
 })
 
 const User = model("User", userSchema);
