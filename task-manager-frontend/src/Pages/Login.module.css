@@ -21,6 +21,7 @@ input {
   margin: 20px;
   border: 1px solid #c3c0fa;
   border-radius: 8px;
+  outline: none;
 }
 
 input::placeholder {
@@ -30,7 +31,8 @@ input::placeholder {
 }
 
 input:focus {
-  border: 1px solid #c3c0fa;
+  border-color: #c3c0fa;
+  padding-left: 10px;
 }
 a {
   font-size: 14px;
