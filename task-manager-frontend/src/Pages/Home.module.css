@@ -1,6 +1,73 @@
 .home {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
+}
+.task-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100px;
+  background: #fff;
+  margin-left: -330px;
+  margin-top: 20px;
+  border: 1px solid #c3c0fa;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgb(219, 218, 245);
+}
+
+.task {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #0a7e0a;
+}
+.actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-btn {
+  margin-left: -160px;
+  margin-top: 10px;
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 8px;
+}
+
+.delete-btn {
+  margin-left: -160px;
+  margin-top: 10px;
+  background: #f34346;
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 8px;
+}
+
+.check-btn {
+  margin-left: -160px;
+  margin-top: 10px;
+  background: #0a7e0a;
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 8px;
 }

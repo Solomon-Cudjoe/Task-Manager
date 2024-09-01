@@ -45,6 +45,10 @@
   border-radius: 100%;
   cursor: pointer;
 }
+
+.profile:hover {
+  background: #f8f8f8;
+}
 .mode-btn {
   display: flex;
   justify-content: center;

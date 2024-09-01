@@ -3,6 +3,9 @@ import classes from "./Navbar.module.css";
 import { IoPersonOutline } from "react-icons/io5";
 import { GoSun } from "react-icons/go";
 
+// import { IoMoonOutline } from "react-icons/io5";
+// <IoMoonOutline />
+
 const Navbar = () => {
   return (
     <>
