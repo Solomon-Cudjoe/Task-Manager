@@ -188,3 +188,38 @@ exports.resetPassword = async (req, res) => {
     }
     
 }
+
+exports.editProfile = async (req, res) => {
+    try {
+    const { userEmail } = req.params;
+    const { firstName, lastName, email, dateOfBirth } = req.body;
+    const user = await User.findOne({ email: userEmail });
+    console.log(user);
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    if (firstName) {
+        user.firstName = firstName;
+    }
+    if (lastName) {
+        user.lastName = lastName;
+    }
+    if (email) {
+        user.email = email;
+    }
+    if (dateOfBirth) {
+        user.dateOfBirth = dateOfBirth;
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+        message: "Successful",
+        user
+    })
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+    
+}
