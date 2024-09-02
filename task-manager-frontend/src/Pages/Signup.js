@@ -17,15 +17,15 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials({ ...credentials, [name]: value });
-    console.log(credentials);
   };
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(credentials);
     await axios
-      .post("http://localhost:5001/auth/signup", credentials)
+      .post("http://localhost:5000/auth/signUp", credentials)
       .then((response) => {
         console.log(response.data);
         if (response.data.error) {
@@ -47,17 +47,23 @@ const Signup = () => {
         <form className="login-form">
           <input
             type="text"
-            name="firstname"
+            name="firstName"
             placeholder="Firstname"
             onChange={handleChange}
           />
           <input
             type="text"
-            name="lastname"
+            name="lastName"
             placeholder="Lastname"
             onChange={handleChange}
           />
-          <input type="email" name="email" className="" placeholder="Email" />
+          <input
+            type="email"
+            name="email"
+            className=""
+            placeholder="Email"
+            onChange={handleChange}
+          />
           <input
             type="password"
             name="password"
