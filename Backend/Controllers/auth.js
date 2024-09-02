@@ -168,6 +168,7 @@ exports.resetPassword = async (req, res) => {
     if (!token) {
       return res.status(400).json({ error: "Token is required" });
     }
+<<<<<<< HEAD
 
     if (!password || password.length < 8) {
       return res.status(404).json({
@@ -198,3 +199,42 @@ exports.resetPassword = async (req, res) => {
     return res.status(500).json(err.message);
   }
 };
+=======
+    
+}
+
+exports.editProfile = async (req, res) => {
+    try {
+    const { userEmail } = req.params;
+    const { firstName, lastName, email, dateOfBirth } = req.body;
+    const user = await User.findOne({ email: userEmail });
+    console.log(user);
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    if (firstName) {
+        user.firstName = firstName;
+    }
+    if (lastName) {
+        user.lastName = lastName;
+    }
+    if (email) {
+        user.email = email;
+    }
+    if (dateOfBirth) {
+        user.dateOfBirth = dateOfBirth;
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+        message: "Successful",
+        user
+    })
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+    
+}
+>>>>>>> 04eeccc0fdf6bb7089569314fb3277b714c364c1
