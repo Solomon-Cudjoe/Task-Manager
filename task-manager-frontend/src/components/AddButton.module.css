@@ -1,0 +1,19 @@
+.add-btn {
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 100%;
+  position: absolute;
+  float: right;
+  margin-top: 250px;
+  margin-left: 800px;
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background: #c3c0fa;
+}

@@ -12,3 +12,16 @@
   border-radius: 10px;
   box-shadow: 0 2px 8px rgb(219, 218, 245);
 }
+
+.addTask-btn {
+  margin-left: -160px;
+  margin-top: 10px;
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  width: 100px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 8px;
+}
