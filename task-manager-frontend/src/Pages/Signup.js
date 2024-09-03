@@ -36,7 +36,7 @@ const Signup = () => {
         }
       })
       .catch((err) => {
-        alert("Registration failed");
+        alert(err.response.data.error);
         console.log(err.message);
       });
   };

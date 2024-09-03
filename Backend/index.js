@@ -7,6 +7,8 @@ require("dotenv").config();
 const authRoutes = require("./Routes/auth");
 const taskRoutes = require("./Routes/task");
 const tags = require("./Routes/category");
+const notification = require('./Routes/notification');
+const { notificationJob } = require("./Jobs/jobs");
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -25,12 +27,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("dev"));
 
+app.get('/' , (req , res)=>{
+   res.send('hello from the notes server)')
+})
+
+app.use('/task', taskRoutes);
+
 app.get("/", (req, res) => {
   res.send("hello from the notes server)");
 });
 app.use("/task", taskRoutes);
 app.use("/auth", authRoutes);
 app.use("/tags", tags);
+app.use("notifications", notification);
+
+
+notificationJob();
 
 app.listen(port, () =>
   console.log("Server is up and running on port : " + port)

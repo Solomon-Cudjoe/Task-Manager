@@ -1,5 +1,6 @@
 const User = require('../Models/auth');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require("google-auth-library");
 const { hashPassword, comparePassword, generateToken, sendVerificationEmail, sendResetEmail } = require('../Helpers/auth');
 
 exports.signUp = async (req, res) => {
@@ -43,6 +44,28 @@ exports.signUp = async (req, res) => {
         return res.status(500).json({ error: err.message});
     }
 };
+
+exports.google = async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Referrer-Policy", "no-referrer-when-downgrade");
+
+    const redirectUrl = `${process.env.FRONTEND_URL}`;
+
+    const OAuth2Client = new OAuth2Client(
+        process.env.CLIENT_ID,
+        procees.env.CLIENT_SECRET,
+        redirectUrl
+    );
+
+    const authorizedUrl = OAuth2Client.generateAuthUrl({
+        access_type: "offline",
+        scope: "https://www.googleapis.com/auth/userinfo.profile openid",
+        prompt: "consent",
+
+    })
+
+    res.json({url: authorizedUrl})
+}
 
 exports.login = async (req, res) => {
     try {
