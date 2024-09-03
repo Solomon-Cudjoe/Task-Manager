@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const colors = require("colors");
+const cookieParser = require('cookie-parser');
 const mongoose = require("mongoose");
 require("dotenv").config();
 const authRoutes = require("./Routes/auth");
@@ -22,6 +23,7 @@ mongoose
     )
   );
 
+app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({

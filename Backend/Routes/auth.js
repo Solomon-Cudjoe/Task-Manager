@@ -1,8 +1,9 @@
 const { Router } = require("express");
-const { signUp, login, getToken, verifyUser, forgotPassword, resetPassword, editProfile, google } = require('../Controllers/auth');
+const { signUp, login, getToken, verifyUser, forgotPassword, resetPassword, editProfile, google, authenticate } = require('../Controllers/auth');
 const router = Router();
 
 router.post('/signUp', signUp);
+router.get('/authenticate', authenticate);
 router.post("/login", login);
 router.get("/get-token/:email", getToken);
 router.put("/verify-user/:token", verifyUser);

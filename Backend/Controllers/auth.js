@@ -1,11 +1,10 @@
 const User = require('../Models/auth');
 const jwt = require('jsonwebtoken');
-const { OAuth2Client } = require("google-auth-library");
 const { hashPassword, comparePassword, generateToken, sendVerificationEmail, sendResetEmail, oauth, getGoogleUser } = require('../Helpers/auth');
 
 
 const cookies = {
-    maxAge: 900000,
+    maxAge: 604800000,
     httpOnly: true,
     sameSite: true,
     secure: true,
@@ -57,19 +56,8 @@ exports.signUp = async (req, res) => {
 exports.google = async (req, res) => {
     const { code } = req.query;
     const { id_token, access_token } = await oauth(code);
-    
-    // const googleUser = jwt.decode(id_token);
-    // console.log(googleUser);
-
     const googleUser = await getGoogleUser(id_token, access_token);
-
-    if (!googleUser.verified_email) {
-        return res.status(403).json({
-            error: "Google is not verified"
-        })
-    }
-
-    const user = await findOneAndUpdate({ email: googleUser.email }, {
+    const user = await User.findOneAndUpdate({ email: googleUser.email }, {
         email: googleUser.email,
         firstName: googleUser.given_name,
         lastName: googleUser.family_name,
@@ -82,7 +70,13 @@ exports.google = async (req, res) => {
         return res.status(409).json({ error: "User not found" });
     }
 
-
+    const token = generateToken(user, "auth", "7d");
+    res.cookie("token", token, cookies);
+    
+    user.password = undefined;
+    user.secret = undefined;
+    const { password, secret, ...rest } = user._doc;
+    res.redirect(process.env.FRONTEND_URL);
 }
 
 exports.login = async (req, res) => {
@@ -105,16 +99,11 @@ exports.login = async (req, res) => {
         if (!match) {
             return res.status(404).json({ error: "Password is incorrect" });
         } else {
-            const accessToken = generateToken(exists, "auth", "15m");
+            const token = generateToken(exists, "auth", "7d");
             exists.password = undefined;
             exists.secret = undefined;
             const { password, secret, ...rest } = exists._doc;
-            res.cookie("accessToken", accessToken, cookies);
-            const refreshToken = generateToken(exists, "refresh", "7d");
-            res.cookie("refreshToken", refreshToken, {
-                ...cookies,
-                maxAge: 604800000
-            })
+            res.cookie("token", token, cookies);            
             return res.status(200).json({
                 message: "Login Successful",
                 user: rest
@@ -125,6 +114,30 @@ exports.login = async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
+
+exports.authenticate = async (req, res) => {
+    const { token } = req.cookies;
+    if (!token) {
+        return;
+    }
+    let payload;
+    try {
+        payload = jwt.verify(token, process.env.JWT_SECRET);
+        if (payload.type !== "auth") {
+            return res.status(400).json({ error: "Invalid token" });
+        }
+    } catch (e) {
+        return res.status(400).json({ error: 'Invalid token' });
+    }
+    const user = await User.findById(payload._id);
+    if (!user) {
+        return res.status(409).json({ error: "User not found" });
+    };
+    user.password = undefined;
+    user.secret = undefined;
+    const { password, secret, ...rest } = user._doc;
+    return res.status(200).json({ user: rest });   
+}   
 
 exports.getToken = async (req, res) => {
     try {
