@@ -88,6 +88,7 @@ exports.google = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log(email, password)
         if (!email) {
             return res.status(404).json({ error: "Email is required" })
         } else if (!password || password.length < 8) {

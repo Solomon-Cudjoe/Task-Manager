@@ -29,9 +29,8 @@ const TaskForm = ({ user }) => {
     e.preventDefault();
 
     console.log(taskForm);
-    console.log(user._id);
     await axios
-      .post(`http://localhost:5001/task/${user._id}`, { task: taskForm })
+      .post(`http://localhost:5001/task/${user._id}`, taskForm)
       .then((response) => {
         console.log(response.data);
         if (response.data.error) {
@@ -42,8 +41,8 @@ const TaskForm = ({ user }) => {
         }
       })
       .catch((err) => {
-        alert("Failed to add new task: " + err.message);
-        console.log(err.message);
+        alert(err.response.data.error);
+        console.log(err);
       });
   };
 

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import classes from "./Login.module.css";
 import Card from "../components/Card";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 
-const Login = () => {
+const Login = ({handleLogin}) => {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -21,22 +20,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(credentials);
-    await axios
-      .post("http://localhost:5001/auth/login", credentials)
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.error) {
-          alert(response.data.error);
-        } else {
-          alert(response.data.message);
-          navigate("/");
-        }
-      })
-      .catch((err) => {
-        alert("Failed to login");
-        console.log(err.message);
-      });
+    handleLogin(credentials).then(() => {
+      navigate('/');
+    }).catch((e) => {
+      alert(e)
+    })
+    
   };
   return (
     <div className={classes.login}>

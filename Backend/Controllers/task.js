@@ -4,12 +4,11 @@ const Category = require("../Models/category");
 
 exports.addTask = async (req, res) => {
   const { userId } = req.params;
-  const { title, description, dueDate } = req.body;
+  const { title, description, dueDate, priority } = req.body;
   const user = await User.findById(userId);
   if (!user) {
     return res.status(404).json({ error: "User not found" });
   }
-
   if (title === "" || title === undefined) {
     return res.status(404).json({ error: "Must add a title" });
   }
@@ -19,6 +18,7 @@ exports.addTask = async (req, res) => {
     description,
     dueDate,
     userId,
+    priority
   });
 
   await newTask.save();
