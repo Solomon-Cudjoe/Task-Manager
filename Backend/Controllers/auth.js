@@ -2,7 +2,6 @@ const User = require('../Models/auth');
 const jwt = require('jsonwebtoken');
 const { hashPassword, comparePassword, generateToken, sendVerificationEmail, sendResetEmail, oauth, getGoogleUser } = require('../Helpers/auth');
 
-
 const cookies = {
     maxAge: 604800000,
     httpOnly: true,
