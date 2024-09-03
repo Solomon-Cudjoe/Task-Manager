@@ -21,6 +21,9 @@ const userSchema = new Schema({
   dateOfBirth: {
     type: Date,
   },
+  picture: {
+    type: String
+  },
   verified: {
     type: Boolean,
     required: true,

@@ -1,6 +1,9 @@
 const  bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const axios = require("axios");
+const qs = require("querystring");
+
 
 exports.generateToken = (user, type, expiresIn) => {
     return jwt.sign({ _id: user._id, type }, process.env.JWT_SECRET, { expiresIn });
@@ -73,5 +76,40 @@ exports.sendResetEmail = async (user, token) => {
         console.log(info);
     } catch(err) {
         console.error("Error sending email", err);
+    }
+}
+
+exports.oauth = async (code) => {
+    const url = "https://oauth2.googleapis.com/token";
+
+    const values = {
+        code,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+        redirect_uri: process.env.REDIRECT_URL,
+        grant_type: "authorization_code",
+    };
+    
+    console.log(values);
+    try {
+        const res = await axios.post(url, qs.stringify(values), {
+            "Content-Type": "application/x-www-form-urlencoded",
+        })
+        return res.data
+    } catch (err) {
+        console.error(err, "Failed");
+    }
+}
+
+exports.getGoogleUser = async (id_token, access_token) => {
+    try {
+        const res = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?alt=json&access_token=${access_token}`, {
+            headers: {
+                Authorization: `Bearer ${id_token}`
+            }
+        })
+        return res.data
+    } catch (err) {
+        console.log(err, "Error fethcing user");
     }
 }

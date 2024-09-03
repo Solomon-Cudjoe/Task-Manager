@@ -1,8 +1,17 @@
 const User = require('../Models/auth');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require("google-auth-library");
-const { hashPassword, comparePassword, generateToken, sendVerificationEmail, sendResetEmail } = require('../Helpers/auth');
+const { hashPassword, comparePassword, generateToken, sendVerificationEmail, sendResetEmail, oauth, getGoogleUser } = require('../Helpers/auth');
 
+
+const cookies = {
+    maxAge: 900000,
+    httpOnly: true,
+    sameSite: true,
+    secure: true,
+    path: "/",
+    domain: "localhost"
+}
 exports.signUp = async (req, res) => {
     try {
         const { firstName, lastName, email, password } = req.body;
@@ -46,25 +55,34 @@ exports.signUp = async (req, res) => {
 };
 
 exports.google = async (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Referrer-Policy", "no-referrer-when-downgrade");
+    const { code } = req.query;
+    const { id_token, access_token } = await oauth(code);
+    
+    // const googleUser = jwt.decode(id_token);
+    // console.log(googleUser);
 
-    const redirectUrl = `${process.env.FRONTEND_URL}`;
+    const googleUser = await getGoogleUser(id_token, access_token);
 
-    const OAuth2Client = new OAuth2Client(
-        process.env.CLIENT_ID,
-        procees.env.CLIENT_SECRET,
-        redirectUrl
-    );
+    if (!googleUser.verified_email) {
+        return res.status(403).json({
+            error: "Google is not verified"
+        })
+    }
 
-    const authorizedUrl = OAuth2Client.generateAuthUrl({
-        access_type: "offline",
-        scope: "https://www.googleapis.com/auth/userinfo.profile openid",
-        prompt: "consent",
-
+    const user = await findOneAndUpdate({ email: googleUser.email }, {
+        email: googleUser.email,
+        firstName: googleUser.given_name,
+        lastName: googleUser.family_name,
+    }, {
+        upsert: true,
+        new: true
     })
 
-    res.json({url: authorizedUrl})
+    if (!user) {
+        return res.status(409).json({ error: "User not found" });
+    }
+
+
 }
 
 exports.login = async (req, res) => {
@@ -86,13 +104,18 @@ exports.login = async (req, res) => {
         if (!match) {
             return res.status(404).json({ error: "Password is incorrect" });
         } else {
-            const token = generateToken(exists, "auth", "3d");
+            const accessToken = generateToken(exists, "auth", "15m");
             exists.password = undefined;
             exists.secret = undefined;
             const { password, secret, ...rest } = exists._doc;
+            res.cookie("accessToken", accessToken, cookies);
+            const refreshToken = generateToken(exists, "refresh", "7d");
+            res.cookie("refreshToken", refreshToken, {
+                ...cookies,
+                maxAge: 604800000
+            })
             return res.status(200).json({
                 message: "Login Successful",
-                token,
                 user: rest
             })
         }

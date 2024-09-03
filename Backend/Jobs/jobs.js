@@ -30,6 +30,5 @@ exports.notificationJob = () => {
                 console.log(notification);
             }
         }        
-        console.log("Notified at " + now.toUTCString(), dayLater.toUTCString());
     })
 }

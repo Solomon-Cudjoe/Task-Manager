@@ -5,6 +5,7 @@ import classes from "./Login.module.css";
 import Card from "../components/Card";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import getGoogleOAuth from "../utils/google";
 
 const Signup = () => {
   const [credentials, setCredentials] = useState({
@@ -96,7 +97,9 @@ const Signup = () => {
         <hr />
 
         <div className={classes["login-actions"]}>
-          <button className={classes["google-btn"]}>
+          <button className={classes["google-btn"]} onClick={() => {
+            window.location.href = getGoogleOAuth();
+           } }>
             <FcGoogle />
             <p>Google</p>
           </button>
