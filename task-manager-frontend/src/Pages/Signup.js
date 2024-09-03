@@ -25,7 +25,7 @@ const Signup = () => {
     e.preventDefault();
     console.log(credentials);
     await axios
-      .post("http://localhost:5000/auth/signUp", credentials)
+      .post("http://localhost:5001/auth/signUp", credentials)
       .then((response) => {
         console.log(response.data);
         if (response.data.error) {
@@ -85,7 +85,10 @@ const Signup = () => {
         >
           SignUp
         </button>
-        <Link style={{ fontSize: 16, fontWeight: 700, marginTop: 20 }}>
+        <Link
+          style={{ fontSize: 16, fontWeight: 700, marginTop: 20 }}
+          to="/login"
+        >
           Already have an account? SignIn now
         </Link>
 

@@ -18,7 +18,6 @@ const Navbar = () => {
               name="search"
               placeholder="Search Tasks..."
               autoComplete="false"
-              autoFocus="true"
             />
             <button type="submit" className={classes["search-btn"]}>
               Search
