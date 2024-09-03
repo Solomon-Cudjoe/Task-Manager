@@ -24,6 +24,10 @@ const taskSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    notified: {
+        type: Boolean,
+        default: false
+    },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category"
