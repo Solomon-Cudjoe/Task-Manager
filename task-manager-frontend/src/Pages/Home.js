@@ -10,7 +10,7 @@ import { FaRegPenToSquare } from "react-icons/fa6";
 import { FiTrash } from "react-icons/fi";
 import { FaCheck } from "react-icons/fa6";
 import AddButton from "../components/AddButton";
-const Home = (props) => {
+const Home = ({ user }) => {
   const name = "Solomon";
   const email = "solomon@gmail.com";
 
@@ -61,7 +61,7 @@ const Home = (props) => {
 
       {isModalOpen && (
         <Modal onClose={handleModalClose}>
-          <TaskForm />
+          <TaskForm user={user} />
           <button onClick={handleModalClose} className={classes["close-btn"]}>
             Cancel
           </button>
