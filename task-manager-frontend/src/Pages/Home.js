@@ -1,15 +1,18 @@
 import React, { useState } from "react";
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import classes from "./Home.module.css";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 import TaskCard from "../components/TaskCard";
 import Modal from "../components/Modal";
 import TaskForm from "../components/TaskForm";
-
 import { FaRegPenToSquare } from "react-icons/fa6";
 import { FiTrash } from "react-icons/fi";
 import { FaCheck } from "react-icons/fa6";
 import AddButton from "../components/AddButton";
+
+
 const Home = ({ user }) => {
   const name = "Solomon";
   const email = "solomon@gmail.com";
@@ -71,4 +74,14 @@ const Home = ({ user }) => {
   );
 };
 
-export default Home;
+
+Home.propTypes = {
+  user: PropTypes.object
+}
+
+const mapStateToProps = (state) => ({
+  user: state.user
+})
+
+
+export default connect(mapStateToProps, {})(Home)

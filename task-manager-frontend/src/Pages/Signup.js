@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import classes from "./Login.module.css";
 import Card from "../components/Card";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import getGoogleOAuth from "../utils/google";
+import { handleSignUp } from "../redux/actions";
 
-const Signup = () => {
+const Signup = ({handleSignUp}) => {
   const [credentials, setCredentials] = useState({
     firstName: "",
     lastName: "",
@@ -25,21 +27,14 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(credentials);
-    await axios
-      .post("http://localhost:5001/auth/signUp", credentials)
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.error) {
-          alert(response.data.error);
-        } else {
-          alert(response.data.message);
-          navigate("/login");
-        }
-      })
-      .catch((err) => {
-        alert(err.response.data.error);
-        console.log(err.message);
-      });
+    handleSignUp(credentials).then((res) => {
+      console.log(res);
+      alert(res.message)
+      navigate('/login');
+    }).catch((e) => {
+      console.log(e);
+      alert(e.error);
+    })
   };
 
   return (
@@ -114,4 +109,11 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+Signup.propTypes = {
+  handleSignUp: PropTypes.func
+}
+
+const mapStateToProps = (state) => ({})
+
+
+export default connect(mapStateToProps, {handleSignUp})(Signup)

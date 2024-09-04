@@ -1,12 +1,24 @@
 import React from "react";
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import classes from "./Navbar.module.css";
 import { IoPersonOutline } from "react-icons/io5";
 import { GoSun } from "react-icons/go";
+import { handleLogout } from "../redux/actions";
 
 // import { IoMoonOutline } from "react-icons/io5";
 // <IoMoonOutline />
 
-const Navbar = () => {
+const Navbar = ({ handleLogout }) => {
+  const logout = () => {
+    handleLogout().then((res) => {
+      console.log(res);
+      alert(res.message);
+    }).catch((e) => {
+      console.log(e)
+    })
+  }
+
   return (
     <>
       <header className={classes.header}>
@@ -41,4 +53,12 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+
+Navbar.propTypes = {
+  handleLogout: PropTypes.func,
+}
+
+const mapStateToProps = (state) => ({})
+
+
+export default connect(mapStateToProps, { handleLogout })(Navbar);

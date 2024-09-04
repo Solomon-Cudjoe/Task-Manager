@@ -1,8 +1,8 @@
-import { SET_USER, SET_TOKEN, SET_TASKS } from "./constants";
+import { SET_USER, SET_TASKS, SET_AUTHENTICATED } from "./constants";
 
 const initialState = {
     user: null,
-    token: null,
+    authenticated: false,
     tasks: []
 }
 
@@ -13,10 +13,10 @@ export const reducer = (state = initialState, action) => {
                 ...state,
                 user: action.payload
             }
-        case SET_TOKEN:
+        case SET_AUTHENTICATED:
             return {
                 ...state,
-                token: action.payload
+                authenticated: action.payload
             }
         case SET_TASKS:
             return {

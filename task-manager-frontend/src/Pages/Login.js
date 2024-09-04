@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { Link, useNavigate } from "react-router-dom";
 import classes from "./Login.module.css";
 import Card from "../components/Card";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import { handleLogin } from "../redux/actions";
 
 const Login = ({handleLogin}) => {
   const [credentials, setCredentials] = useState({
@@ -80,4 +83,10 @@ const Login = ({handleLogin}) => {
   );
 };
 
-export default Login;
+Login.propTypes = {
+  handleLogin: PropTypes.func
+}
+
+const mapStateToProps = (state) => ({})
+
+export default connect(mapStateToProps, {handleLogin})(Login)

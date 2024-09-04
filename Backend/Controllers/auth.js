@@ -282,3 +282,9 @@ exports.editProfile = async (req, res) => {
     }
     
 }
+
+
+exports.logout = async (req, res) => {
+    res.clearCookie('token');
+    res.status(200).json({message: "Logout successful"})
+}
