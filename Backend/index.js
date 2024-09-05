@@ -1,16 +1,16 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const session = require('express-session');
-var MongoDBStore = require('connect-mongodb-session')(session)
+const session = require("express-session");
+var MongoDBStore = require("connect-mongodb-session")(session);
 const colors = require("colors");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const authRoutes = require("./Routes/auth");
 const taskRoutes = require("./Routes/task");
 const tags = require("./Routes/category");
-const notification = require('./Routes/notification');
+const notification = require("./Routes/notification");
 const { notificationJob } = require("./Jobs/jobs");
 
 const port = process.env.PORT || 5000;
@@ -27,44 +27,48 @@ mongoose
 
 var store = new MongoDBStore({
   uri: process.env.DATABASE,
-  collection: 'mySessions'
+  collection: "mySessions",
 });
 
-store.on('error', function(error) {
-  console.error('Session store error:', error);
+store.on("error", function (error) {
+  console.error("Session store error:", error);
 });
 
-app.use(session({
-  secret: process.env.SESSION_SECRET, 
-  resave: false,
-  saveUninitialized: false,
-  store: store,
-  cookie: {
-    secure: false,
-    maxAge: 1000 * 60 * 15
-  }
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      secure: false,
+      maxAge: 1000 * 60 * 15,
+    },
+  })
+);
 
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL, 
-  methods: 'GET,POST,PUT,DELETE',
-  credentials: true 
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 
 app.use(morgan("dev"));
 
-app.get('/' , (req , res) => {
-   res.send('hello from the notes server)');
+app.get("/", (req, res) => {
+  res.send("hello from the notes server)");
 });
 
-app.use('/task', taskRoutes);
-app.use('/auth', authRoutes);
-app.use('/tags', tags);
-app.use('/notifications', notification);
+app.use("/task", taskRoutes);
+app.use("/auth", authRoutes);
+app.use("/tags", tags);
+app.use("/notifications", notification);
 
 notificationJob();
 

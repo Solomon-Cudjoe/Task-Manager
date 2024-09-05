@@ -11,7 +11,7 @@ const {
 } = require("../Helpers/auth");
 
 const cookies = {
-  maxAge: 604800000,
+  maxAge: 3600000,
   httpOnly: true,
   sameSite: true,
   secure: true,
@@ -83,7 +83,7 @@ exports.google = async (req, res) => {
     return res.status(409).json({ error: "User not found" });
   }
 
-  const token = generateToken(user, "auth", "7d");
+  const token = generateToken(user, "auth", "1h");
   res.cookie("token", token, cookies);
 
   user.password = undefined;
@@ -114,7 +114,7 @@ exports.login = async (req, res) => {
     if (!match) {
       return res.status(404).json({ error: "Password is incorrect" });
     } else {
-      const token = generateToken(exists, "auth", "7d");
+      const token = generateToken(exists, "auth", "1h");
       exists.password = undefined;
       exists.secret = undefined;
       const { password, secret, ...rest } = exists._doc;
@@ -127,6 +127,14 @@ exports.login = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.isAuth = (req, res, next) => {
+  if (req.session.isAuth) {
+    next();
+  } else {
+    return;
   }
 };
 

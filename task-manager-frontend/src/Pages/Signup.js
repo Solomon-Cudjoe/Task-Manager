@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import classes from "./Login.module.css";
 import Card from "../components/Card";
 import { FcGoogle } from "react-icons/fc";
@@ -9,7 +9,7 @@ import { FaFacebook } from "react-icons/fa";
 import getGoogleOAuth from "../utils/google";
 import { handleSignUp } from "../redux/actions";
 
-const Signup = ({handleSignUp}) => {
+const Signup = ({ handleSignUp }) => {
   const [credentials, setCredentials] = useState({
     firstName: "",
     lastName: "",
@@ -27,14 +27,16 @@ const Signup = ({handleSignUp}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(credentials);
-    handleSignUp(credentials).then((res) => {
-      console.log(res);
-      alert(res.message)
-      navigate('/login');
-    }).catch((e) => {
-      console.log(e);
-      alert(e.error);
-    })
+    handleSignUp(credentials)
+      .then((res) => {
+        console.log(res);
+        alert(res.message);
+        navigate("/login");
+      })
+      .catch((e) => {
+        console.log(e);
+        alert(e.error);
+      });
   };
 
   return (
@@ -92,9 +94,12 @@ const Signup = ({handleSignUp}) => {
         <hr />
 
         <div className={classes["login-actions"]}>
-          <button className={classes["google-btn"]} onClick={() => {
-            window.location.href = getGoogleOAuth();
-           } }>
+          <button
+            className={classes["google-btn"]}
+            onClick={() => {
+              window.location.href = getGoogleOAuth();
+            }}
+          >
             <FcGoogle />
             <p>Google</p>
           </button>
@@ -110,10 +115,9 @@ const Signup = ({handleSignUp}) => {
 };
 
 Signup.propTypes = {
-  handleSignUp: PropTypes.func
-}
+  handleSignUp: PropTypes.func,
+};
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({});
 
-
-export default connect(mapStateToProps, {handleSignUp})(Signup)
+export default connect(mapStateToProps, { handleSignUp })(Signup);
