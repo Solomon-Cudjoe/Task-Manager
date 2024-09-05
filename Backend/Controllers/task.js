@@ -28,13 +28,18 @@ exports.addTask = async (req, res) => {
 //Routes for viewing and filtering
 
 exports.getTasks = async (req, res) => {
-  const { userId } = req.params;
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const tasks = await Task.find({ userId });
+    return res.status(200).json({ message: "Tasks fetched successfully", tasks });
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({error: e.message})
   }
-  const tasks = await Task.find({ userId });
-  return res.status(200).json({ tasks });
 };
 
 exports.filterWithStatus = async (req, res) => {
@@ -85,49 +90,61 @@ exports.editTask = async (req, res) => {
 };
 
 exports.changeStatus = async (req, res) => {
-  const { userId, taskId } = req.params;
-  const { status } = req.body;
+  try {
+    const { userId, taskId } = req.params;
+    const { status } = req.body;
 
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    task.status = status.toLowerCase();
+
+    await task.save();
+
+    return res.status(200).json({
+      message: "Successfull",
+      task,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: err.message });
   }
-  const task = await Task.findById(taskId);
-  if (!task) {
-    return res.status(404).json({ error: "Task not found" });
-  }
-
-  task.status = status.toLowerCase();
-
-  await task.save();
-
-  return res.status(200).json({
-    message: "Successfull",
-    task,
-  });
+  
 };
 
 exports.changePriority = async (req, res) => {
-  const { userId, taskId } = req.params;
-  const { priority } = req.body;
+  try {
+    const { userId, taskId } = req.params;
+    const { priority } = req.body;
 
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    task.priority = priority.toLowerCase();
+
+    await task.save();
+
+    return res.status(200).json({
+      message: "Successfull",
+      task,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: err.message });
   }
-  const task = await Task.findById(taskId);
-  if (!task) {
-    return res.status(404).json({ error: "Task not found" });
-  }
-
-  task.priority = priority.toLowerCase();
-
-  await task.save();
-
-  return res.status(200).json({
-    message: "Successfull",
-    task,
-  });
+  
 };
 
 exports.assignTag = async (req, res) => {

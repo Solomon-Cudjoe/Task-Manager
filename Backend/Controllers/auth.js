@@ -122,14 +122,13 @@ exports.isAuth = (req, res, next) => {
     if (req.session.isAuth) {
         next()
     } else {
-        return;
+        return res.status(403).json({ error: "Please Login" });
     }
 }
 
 exports.authenticate = async (req, res) => {
     const { user } = req.session;
-    console.log({ user });
-    return res.status(200).json({ user });   
+    return res.status(200).json({ message: "Authenticated", user });   
 }   
 
 exports.getToken = async (req, res) => {

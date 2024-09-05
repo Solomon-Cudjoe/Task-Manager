@@ -66,9 +66,11 @@ export const checkAuth = () => {
             });
             dispatch(setUser(res.data.user));
             dispatch(setAuthenticated(true));
+            return Promise.resolve(res.data);
         } catch (err) {
             dispatch(setUser(null));
             dispatch(setAuthenticated(false));
+            return Promise.reject(err.response.data);
         }
     }
 }
@@ -84,7 +86,7 @@ export const handleLogout = () => {
             return Promise.resolve(response.data);
         } catch (err) {
             console.log(err);
-            return Promise.reject(err);
+            return Promise.reject(err.response.data);
         }
     }
 }
@@ -99,10 +101,42 @@ export const fetchTasks = (userId) => {
                 dispatch(setTasks(response.data.tasks));
                 return Promise.resolve(response.data);
             } else {
-                return Promise.reject(response.data.error);
+                return Promise.reject(response.data);
             }
         } catch (err) {
-            return Promise.reject(err.response.data.error);
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+export const changeStatus = (userId, taskId) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.put(`${process.env.REACT_APP_SERVER}/tasks/status/${userId}/${taskId}`, { status: "completed" });
+            if (!response.data.error) {
+                dispatch(fetchTasks(userId));
+                return Promise.resolve(response.data);
+            } else {
+                return Promise.reject(response.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+export const onDelete = (userId, taskId) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.delete(`${process.env.REACT_APP_SERVER}/tasks/${userId}/${taskId}`);
+            if (!response.data.error) {
+                dispatch(fetchTasks(userId));
+                return Promise.resolve(response.data);
+            } else {
+                return Promise.reject(response.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
         }
     }
 }

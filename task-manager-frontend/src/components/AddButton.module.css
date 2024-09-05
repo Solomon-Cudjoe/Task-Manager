@@ -8,9 +8,11 @@
   font-weight: 700;
   border-radius: 100%;
   position: absolute;
-  float: right;
+  right: 1rem;
+  bottom: 1rem;
+  /* float: right;
   margin-top: 250px;
-  margin-left: 800px;
+  margin-left: 800px; */
   cursor: pointer;
 }
 

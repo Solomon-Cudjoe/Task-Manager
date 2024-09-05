@@ -61,7 +61,7 @@ app.get('/' , (req , res) => {
    res.send('hello from the notes server)');
 });
 
-app.use('/task', taskRoutes);
+app.use('/tasks', taskRoutes);
 app.use('/auth', authRoutes);
 app.use('/tags', tags);
 app.use('/notifications', notification);
