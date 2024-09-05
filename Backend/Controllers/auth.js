@@ -28,11 +28,9 @@ exports.signUp = async (req, res) => {
     } else if (!email) {
       return res.status(404).json({ error: "Email is required" });
     } else if (!password || password.length < 8) {
-      return res
-        .status(404)
-        .json({
-          error: "Password is required and must be more than 8 characters",
-        });
+      return res.status(404).json({
+        error: "Password is required and must be more than 8 characters",
+      });
     }
 
     const exists = await User.findOne({ email });
@@ -101,11 +99,9 @@ exports.login = async (req, res) => {
     if (!email) {
       return res.status(404).json({ error: "Email is required" });
     } else if (!password || password.length < 8) {
-      return res
-        .status(404)
-        .json({
-          error: "Password is required and must be more than 8 characters",
-        });
+      return res.status(404).json({
+        error: "Password is required and must be more than 8 characters",
+      });
     }
 
     const exists = await User.findOne({ email });
@@ -242,11 +238,9 @@ exports.resetPassword = async (req, res) => {
     }
 
     if (!password || password.length < 8) {
-      return res
-        .status(404)
-        .json({
-          error: "Password is required and must be more than 8 characters",
-        });
+      return res.status(404).json({
+        error: "Password is required and must be more than 8 characters",
+      });
     }
     let payload;
 

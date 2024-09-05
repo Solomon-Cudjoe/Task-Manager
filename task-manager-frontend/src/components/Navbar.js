@@ -35,7 +35,7 @@ const Navbar = ({ handleLogout }) => {
               placeholder="Search Tasks..."
               autoComplete="false"
             />
-            <button type="submit" className={classes["search-btn"]}>
+            <button type="submit" className={classes["search-btn"]} onClick={logout}>
               Search
             </button>
           </div>

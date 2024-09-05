@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const session = require('express-session');
+var MongoDBStore = require('connect-mongodb-session')(session)
 const colors = require("colors");
 const cookieParser = require('cookie-parser');
 const mongoose = require("mongoose");
@@ -22,6 +24,26 @@ mongoose
       `> Error while connecting to mongoDB : ${err.message}`.underline.red
     )
   );
+
+var store = new MongoDBStore({
+  uri: process.env.DATABASE,
+  collection: 'mySessions'
+});
+
+store.on('error', function(error) {
+  console.error('Session store error:', error);
+});
+
+app.use(session({
+  secret: process.env.SESSION_SECRET, 
+  resave: false,
+  saveUninitialized: false,
+  store: store,
+  cookie: {
+    secure: false,
+    maxAge: 1000 * 60 * 15
+  }
+}));
 
 app.use(cookieParser());
 app.use(express.json());
