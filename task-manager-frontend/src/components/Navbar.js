@@ -1,9 +1,11 @@
 import React from "react";
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import classes from "./Navbar.module.css";
 import { IoPersonOutline } from "react-icons/io5";
 import { GoSun } from "react-icons/go";
+import { IoExitOutline } from "react-icons/io5";
+
 import { handleLogout } from "../redux/actions";
 
 // import { IoMoonOutline } from "react-icons/io5";
@@ -11,13 +13,15 @@ import { handleLogout } from "../redux/actions";
 
 const Navbar = ({ handleLogout }) => {
   const logout = () => {
-    handleLogout().then((res) => {
-      console.log(res);
-      alert(res.message);
-    }).catch((e) => {
-      console.log(e)
-    })
-  }
+    handleLogout()
+      .then((res) => {
+        console.log(res);
+        alert(res.message);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <>
@@ -45,6 +49,10 @@ const Navbar = ({ handleLogout }) => {
               <button className={classes["mode-btn"]}>
                 <GoSun size={20} />
               </button>
+
+              <button className={classes["logout-btn"]} onClick={logout}>
+                <IoExitOutline size={20} />
+              </button>
             </div>
           </div>
         </nav>
@@ -53,12 +61,10 @@ const Navbar = ({ handleLogout }) => {
   );
 };
 
-
 Navbar.propTypes = {
   handleLogout: PropTypes.func,
-}
+};
 
-const mapStateToProps = (state) => ({})
-
+const mapStateToProps = (state) => ({});
 
 export default connect(mapStateToProps, { handleLogout })(Navbar);

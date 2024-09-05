@@ -1,27 +1,35 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import { connect } from 'react-redux'
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Home from "./Pages/Home";
-import { useState, useEffect } from "react";
-import { checkAuth } from './redux/actions';
+import { useEffect } from "react";
+import { checkAuth } from "./redux/actions";
 
-function App({checkAuth, authenticated }) {
-  
+function App({ checkAuth, authenticated }) {
   useEffect(() => {
     checkAuth();
-  },[checkAuth])
+  }, [checkAuth]);
 
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/Login" element={authenticated ? <Navigate to={'/'}/> : <Login />} />
-          <Route path="/Signup" element={authenticated ? <Navigate to={'/'}/> : <Signup />} />
-          <Route path="/" element={ !authenticated ? <Navigate to={'/Login'}/> : <Home />} />
+          <Route
+            path="/Login"
+            element={authenticated ? <Navigate to={"/"} /> : <Login />}
+          />
+          <Route
+            path="/Signup"
+            element={authenticated ? <Navigate to={"/"} /> : <Signup />}
+          />
+          <Route
+            path="/"
+            element={!authenticated ? <Navigate to={"/Login"} /> : <Home />}
+          />
         </Routes>
       </BrowserRouter>
     </>
@@ -30,12 +38,11 @@ function App({checkAuth, authenticated }) {
 
 App.propTypes = {
   authenticated: PropTypes.bool,
-  checkAuth: PropTypes.func
-}
+  checkAuth: PropTypes.func,
+};
 
 const mapStateToProps = (state) => ({
-  authenticated: state.authenticated
+  authenticated: state.authenticated,
+});
 
-})
-
-export default connect(mapStateToProps, {checkAuth})(App);
+export default connect(mapStateToProps, { checkAuth })(App);
