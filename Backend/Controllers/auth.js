@@ -71,6 +71,9 @@ exports.google = async (req, res) => {
             return res.status(409).json({ error: "User not found" });
         }
 
+        user.password = undefined;
+        user.secret = undefined;
+        const { password, secret, ...rest } = user._doc;
         req.session.isAuth = true;
         req.session.user = rest;
         res.redirect(process.env.FRONTEND_URL);
