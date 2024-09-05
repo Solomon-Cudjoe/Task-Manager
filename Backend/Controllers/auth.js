@@ -113,6 +113,8 @@ exports.login = async (req, res) => {
     }
 }
 
+
+//auth middleware
 exports.isAuth = (req, res, next) => {
     if (req.session.isAuth) {
         next()
