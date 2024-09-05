@@ -10,14 +10,6 @@ const {
   getGoogleUser,
 } = require("../Helpers/auth");
 
-const cookies = {
-  maxAge: 3600000,
-  httpOnly: true,
-  sameSite: true,
-  secure: true,
-  path: "/",
-  domain: "localhost",
-};
 exports.signUp = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -63,33 +55,46 @@ exports.signUp = async (req, res) => {
 };
 
 exports.google = async (req, res) => {
-  const { code } = req.query;
-  const { id_token, access_token } = await oauth(code);
-  const googleUser = await getGoogleUser(id_token, access_token);
-  const user = await User.findOneAndUpdate(
-    { email: googleUser.email },
-    {
-      email: googleUser.email,
-      firstName: googleUser.given_name,
-      lastName: googleUser.family_name,
-    },
-    {
-      upsert: true,
-      new: true,
+  try {
+    const { code } = req.query;
+    if (!code) {
+      return res.status(400).json({ error: "Authorization code is required" });
     }
-  );
+    const { id_token, access_token } = await oauth(code);
+    if (!id_token || !access_token) {
+      return res
+        .status(400)
+        .json({ error: "Failed to retrieve tokens from OAuth" });
+    }
+    const googleUser = await getGoogleUser(id_token, access_token);
+    if (!googleUser || !googleUser.email) {
+      return res
+        .status(400)
+        .json({ error: "Failed to retrieve user information from Google" });
+    }
+    const user = await User.findOneAndUpdate(
+      { email: googleUser.email },
+      {
+        email: googleUser.email,
+        firstName: googleUser.given_name,
+        lastName: googleUser.family_name,
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
 
-  if (!user) {
-    return res.status(409).json({ error: "User not found" });
+    if (!user) {
+      return res.status(409).json({ error: "User not found" });
+    }
+
+    req.session.isAuth = true;
+    req.session.user = rest;
+    res.redirect(process.env.FRONTEND_URL);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-
-  const token = generateToken(user, "auth", "1h");
-  res.cookie("token", token, cookies);
-
-  user.password = undefined;
-  user.secret = undefined;
-  const { password, secret, ...rest } = user._doc;
-  res.redirect(process.env.FRONTEND_URL);
 };
 
 exports.login = async (req, res) => {
@@ -103,22 +108,20 @@ exports.login = async (req, res) => {
         error: "Password is required and must be more than 8 characters",
       });
     }
-
     const exists = await User.findOne({ email });
     if (!exists) {
       return res.status(409).json({ error: "User not found" });
     }
-
     const match = await comparePassword(password, exists.password);
 
     if (!match) {
       return res.status(404).json({ error: "Password is incorrect" });
     } else {
-      const token = generateToken(exists, "auth", "1h");
       exists.password = undefined;
       exists.secret = undefined;
       const { password, secret, ...rest } = exists._doc;
-      res.cookie("token", token, cookies);
+      req.session.isAuth = true;
+      req.session.user = rest;
       return res.status(200).json({
         message: "Login Successful",
         user: rest,
@@ -130,6 +133,7 @@ exports.login = async (req, res) => {
   }
 };
 
+//auth middleware
 exports.isAuth = (req, res, next) => {
   if (req.session.isAuth) {
     next();
@@ -139,27 +143,9 @@ exports.isAuth = (req, res, next) => {
 };
 
 exports.authenticate = async (req, res) => {
-  const { token } = req.cookies;
-  if (!token) {
-    return;
-  }
-  let payload;
-  try {
-    payload = jwt.verify(token, process.env.JWT_SECRET);
-    if (payload.type !== "auth") {
-      return res.status(400).json({ error: "Invalid token" });
-    }
-  } catch (e) {
-    return res.status(400).json({ error: "Invalid token" });
-  }
-  const user = await User.findById(payload._id);
-  if (!user) {
-    return res.status(409).json({ error: "User not found" });
-  }
-  user.password = undefined;
-  user.secret = undefined;
-  const { password, secret, ...rest } = user._doc;
-  return res.status(200).json({ user: rest });
+  const { user } = req.session;
+  console.log({ user });
+  return res.status(200).json({ user });
 };
 
 exports.getToken = async (req, res) => {
@@ -310,6 +296,17 @@ exports.editProfile = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
-  res.clearCookie("token");
-  res.status(200).json({ message: "Logout successful" });
+  console.log("Session before destroy:", req.sessionID);
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to logout" });
+      }
+      console.log("Session destroyed:", req.sessionID);
+      res.clearCookie("connect.sid", { path: "/" });
+      return res.status(200).json({ message: "Logout successful" });
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 };
