@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import classes from "./Login.module.css";
 import Card from "../components/Card";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { handleLogin } from "../redux/actions";
+import getGoogleOAuth from "../utils/google";
 
-const Login = ({handleLogin}) => {
+const Login = ({ handleLogin }) => {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -23,12 +24,13 @@ const Login = ({handleLogin}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleLogin(credentials).then(() => {
-      navigate('/');
-    }).catch((e) => {
-      alert(e)
-    })
-    
+    handleLogin(credentials)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((e) => {
+        alert(e);
+      });
   };
   return (
     <div className={classes.login}>
@@ -68,7 +70,12 @@ const Login = ({handleLogin}) => {
         <hr />
 
         <div className={classes["login-actions"]}>
-          <button className={classes["google-btn"]}>
+          <button
+            className={classes["google-btn"]}
+            onClick={() => {
+              window.location.href = getGoogleOAuth();
+            }}
+          >
             <FcGoogle />
             <p>Google</p>
           </button>
@@ -84,9 +91,9 @@ const Login = ({handleLogin}) => {
 };
 
 Login.propTypes = {
-  handleLogin: PropTypes.func
-}
+  handleLogin: PropTypes.func,
+};
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({});
 
-export default connect(mapStateToProps, {handleLogin})(Login)
+export default connect(mapStateToProps, { handleLogin })(Login);

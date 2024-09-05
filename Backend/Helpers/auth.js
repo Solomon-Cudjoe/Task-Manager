@@ -97,7 +97,7 @@ exports.oauth = async (code) => {
         })
         return res.data
     } catch (err) {
-        console.error(err, "Failed");
+        console.error(err.response, "Failed");
     }
 }
 
