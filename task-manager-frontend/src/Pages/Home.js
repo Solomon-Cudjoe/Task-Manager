@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import classes from "./Home.module.css";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
@@ -11,7 +11,6 @@ import { FaRegPenToSquare } from "react-icons/fa6";
 import { FiTrash } from "react-icons/fi";
 import { FaCheck } from "react-icons/fa6";
 import AddButton from "../components/AddButton";
-
 
 const Home = ({ user }) => {
   const name = "Solomon";
@@ -40,21 +39,21 @@ const Home = ({ user }) => {
             <p>{email}</p>
             <h2>{name}</h2>
             <p>{email}</p>
+
+            <div className={classes.actions}>
+              <button className={classes["edit-btn"]}>
+                <FaRegPenToSquare />
+              </button>
+
+              <button className={classes["delete-btn"]}>
+                <FiTrash />
+              </button>
+
+              <button className={classes["check-btn"]}>
+                <FaCheck />
+              </button>
+            </div>
           </TaskCard>
-
-          <div className={classes.actions}>
-            <button className={classes["edit-btn"]}>
-              <FaRegPenToSquare />
-            </button>
-
-            <button className={classes["delete-btn"]}>
-              <FiTrash />
-            </button>
-
-            <button className={classes["check-btn"]}>
-              <FaCheck />
-            </button>
-          </div>
         </Card>
 
         <div>
@@ -74,14 +73,12 @@ const Home = ({ user }) => {
   );
 };
 
-
 Home.propTypes = {
-  user: PropTypes.object
-}
+  user: PropTypes.object,
+};
 
 const mapStateToProps = (state) => ({
-  user: state.user
-})
+  user: state.user,
+});
 
-
-export default connect(mapStateToProps, {})(Home)
+export default connect(mapStateToProps, {})(Home);
