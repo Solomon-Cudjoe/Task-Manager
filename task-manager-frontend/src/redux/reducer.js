@@ -1,9 +1,11 @@
-import { SET_USER, SET_TASKS, SET_AUTHENTICATED } from "./constants";
+import { SET_USER, SET_TASKS, SET_AUTHENTICATED, SET_CATEGORIES, SET_NOTIFICATIONS } from "./constants";
 
 const initialState = {
     user: null,
     authenticated: false,
-    tasks: []
+    tasks: [],
+    categories: [],
+    notifications: [],
 }
 
 export const reducer = (state = initialState, action) => {
@@ -22,6 +24,16 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 tasks: action.payload
+            }
+        case SET_CATEGORIES:
+            return {
+                ...state,
+                categories: action.payload
+            }
+        case SET_NOTIFICATIONS:
+            return {
+                ...state,
+                notifications: action.payload
             }
         default:
             return state

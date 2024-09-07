@@ -67,7 +67,7 @@ exports.filterWithPriority = async (req, res) => {
 // Routes For Editing
 exports.editTask = async (req, res) => {
   const { userId, taskId } = req.params;
-  const { title, description, dueDate } = req.body;
+  const { title, description, dueDate, priority, category } = req.body;
 
   const user = await User.findById(userId);
   if (!user) {
@@ -81,6 +81,10 @@ exports.editTask = async (req, res) => {
   task.title = title;
   task.description = description;
   task.dueDate = dueDate;
+  task.priority = priority;
+  if (category !== null || category !== undefined || category !== '') {
+    task.category = category
+  }
 
   await task.save();
 

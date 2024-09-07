@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.19",
+    "@mui/styles": "^6.0.2",
     "axios": "^1.7.7",
     "cra-template": "1.2.0",
     "react": "^18.3.1",
@@ -13,11 +17,7 @@
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "redux": "^5.0.1",
-    "redux-thunk": "^3.1.0",
-    "@mui/material": "^5.15.19",
-    "@mui/styles": "^5.16.1",
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5"
+    "redux-thunk": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,49 +1,74 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import classes from "./TaskCard.module.css";
+import { getTags, handleTaskCreation, handleTaskEdit } from "../redux/actions";
 
-const TaskForm = ({ user }) => {
+const TaskForm = ({
+  user,
+  setFeedback,
+  handleModalClose,
+  handleTaskCreation,
+  isEditing,
+  selectedTask,
+  categories,
+  getTags,
+  handleTaskEdit
+}) => {
   const [taskForm, setTaskForm] = useState({
     title: "",
     description: "",
     dueDate: null,
     priority: "low",
+    category: ''
   });
-  //   const [dueDate, setDueDate] = useState(null);
 
+  useEffect(() => {
+    getTags().catch(e => alert(e.rror))
+    if (isEditing) {
+      setTaskForm({
+        title: selectedTask.title,
+        description: selectedTask.description,
+        dueDate: selectedTask.dueDate,
+        priority: selectedTask.priority,
+        category: selectedTask.categories ? selectedTask.categories : ''
+      })
+    }
+  },[isEditing, selectedTask, getTags, setTaskForm])
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTaskForm({ ...taskForm, [name]: value });
+    console.log(taskForm);
   };
 
   const handleDateChange = (date) => {
     setTaskForm({ ...taskForm, dueDate: date });
   };
 
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(taskForm);
-    await axios
-      .post(`http://localhost:5001/task/${user._id}`, taskForm)
+    if (isEditing) {
+      handleTaskEdit(user._id, selectedTask._id, taskForm)
       .then((response) => {
-        console.log(response.data);
-        if (response.data.error) {
-          alert(response.data.error);
-        } else {
-          alert(response.data.message);
-          navigate("/");
-        }
+        setFeedback(response);
+        handleModalClose();
       })
       .catch((err) => {
-        alert(err.response.data.error);
-        console.log(err);
+        setFeedback(err);
       });
+    } else {
+      handleTaskCreation(user._id, taskForm)
+      .then((response) => {
+        setFeedback(response);
+        handleModalClose();
+      })
+      .catch((err) => {
+        setFeedback(err);
+      });
+    }
   };
 
   return (
@@ -53,16 +78,17 @@ const TaskForm = ({ user }) => {
         <input
           type="text"
           name="title"
+          value={taskForm.title}
           placeholder="Title"
           onChange={handleChange}
         />
         <input
           type="text"
           name="description"
+          value={taskForm.description}
           placeholder="Description"
           onChange={handleChange}
         />
-
         <DatePicker
           selected={taskForm.dueDate}
           onChange={handleDateChange}
@@ -84,16 +110,47 @@ const TaskForm = ({ user }) => {
           <option value="medium">Medium</option>
           <option value="high">High</option>
         </select>
+
+        {
+          isEditing && (
+            <select
+              name="category"
+              onChange={handleChange}
+              value={taskForm.category ? taskForm.category : '' }
+              className={classes.select}
+            >
+              <option value='' disabled >Select Category</option>
+              {categories.map((cat, index) => (
+                <option
+                  key={index}
+                  value={cat._id}
+                  style={{ textTransform: 'capitalize' }}
+                >{cat.name}</option>
+              ))}
+            </select>
+          )
+        }
       </form>
       <button
         type="submit"
         className={classes["addTask-btn"]}
         onClick={handleSubmit}
       >
-        Add
+        { isEditing ? 'Save' : "Add" }
       </button>
     </div>
   );
 };
 
-export default TaskForm;
+TaskForm.propTypes = {
+  user: PropTypes.object,
+  handleTaskCreation: PropTypes.func
+}
+
+const mapStateToProps = (state) => ({
+  user: state.user,
+  categories: state.categories
+})
+
+
+export default connect(mapStateToProps, {handleTaskCreation, getTags, handleTaskEdit})(TaskForm)

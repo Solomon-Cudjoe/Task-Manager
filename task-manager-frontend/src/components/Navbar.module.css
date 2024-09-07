@@ -53,7 +53,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 50px;
   margin-bottom: 10px;
   margin-top: 10px;
   background: #6c63ff;
@@ -69,7 +68,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 50px;
   margin-bottom: 10px;
   margin-top: 10px;
   background: #6c63ff;
@@ -90,6 +88,7 @@
 .right {
   display: flex;
   flex-direction: row;
+  gap: 1rem;
   justify-content: center;
   align-items: center;
   float: right;

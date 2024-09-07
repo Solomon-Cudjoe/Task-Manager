@@ -10,6 +10,7 @@ exports.getNotifitcations = async (req, res) => {
         })
     }
     return res.status(200).json({
-        notifications
+        notifications,
+        message: "No notifications available"
     })
 }

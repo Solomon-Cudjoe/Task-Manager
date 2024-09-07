@@ -17,15 +17,18 @@ import Loading from "../utils/Loading";
 
 
 const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const [isModalOpen, setIsModalOpen] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [selectedTask, setSeletedTask] = useState({});
 
   useEffect(() => {
     setLoading(true);
     fetchTasks(user._id).then((res) => {
+      setFilteredTasks(res.tasks);
       setLoading(false);
-      setFeedback(res)
     }).catch((e) => {
       setLoading(false);
       setFeedback(e)
@@ -42,6 +45,16 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   const DateToString = (date) => {
     const dt = new Date(date);
     return dt.toDateString();
+  }
+
+  const handleSearch = (keyword) => {
+    const newTasks = tasks.filter((task) => task.title.toLowerCase().includes(keyword.toLowerCase()));
+    setFilteredTasks(newTasks);
+  }
+
+  const onEditClick = (task) => {
+    setSeletedTask(task);
+    setIsEditing(true);
   }
 
   const onCheckClick = (taskId) => {
@@ -68,9 +81,9 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
       {loading && (<Loading/>)}
       {feedback && (<MessageBox data={feedback} onClose={ () => setFeedback(null)  }/>)}
       <div className={classes.home}>
-        <Navbar />
+        <Navbar handleSearch={ handleSearch } />
         <Card>
-          {tasks.map((task, index) => (
+          {filteredTasks.length !== 0 ? filteredTasks.map((task, index) => (
               <TaskCard key={index}>
                 <div className={classes.task}>
                   <p><b>Title</b> : {task.title}</p>
@@ -80,7 +93,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
                   <p><b>Status</b> : { task.status }</p>
                 </div>
                 <div className={classes.actions}>
-                  <button className={classes["edit-btn"]}>
+                  <button className={classes["edit-btn"]} onClick={() => onEditClick(task)}>
                     <FaRegPenToSquare />
                   </button>
 
@@ -93,7 +106,9 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
                   </button>
                 </div>
               </TaskCard>
-            ))
+          ))
+            :
+            <p>No tasks available</p>
           }
           
         </Card>
@@ -105,8 +120,22 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
 
       {isModalOpen && (
         <Modal onClose={handleModalClose}>
-          <TaskForm user={user} />
+          <TaskForm handleModalClose={handleModalClose} setFeedback={setFeedback} />
           <button onClick={handleModalClose} className={classes["close-btn"]}>
+            Cancel
+          </button>
+        </Modal>
+      )}
+
+      {isEditing && (
+        <Modal onClose={() => { setIsEditing(false);  setSeletedTask({})}}>
+          <TaskForm
+            handleModalClose={() => { setIsEditing(false); setSeletedTask({}) }}
+            setFeedback={setFeedback}
+            isEditing={isEditing}
+            selectedTask={selectedTask}
+          />
+          <button onClick={() => { setIsEditing(false);  setSeletedTask({})}} className={classes["close-btn"]}>
             Cancel
           </button>
         </Modal>
