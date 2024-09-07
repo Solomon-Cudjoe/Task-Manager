@@ -33,7 +33,8 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
       setLoading(false);
       setFeedback(e)
     })
-  },[fetchTasks,user])
+  }, [fetchTasks, user]);
+
   const handleModalOpen = () => {
     setIsModalOpen(true);
   };
@@ -59,8 +60,8 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
 
   const onCheckClick = (taskId) => {
     changeStatus(user._id, taskId).then((res) => {
-      console.log(res);
       setFeedback(res);
+      fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks));
     }).catch((e) => {
       console.log(e);
       setFeedback(e);
@@ -70,6 +71,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   const handleDelete = (taskId) => {
     onDelete(user._id, taskId).then((res) => {
       setFeedback(res);
+      fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks));
     }).catch((e) => {
       setFeedback(e);
     })
@@ -134,6 +136,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
             setFeedback={setFeedback}
             isEditing={isEditing}
             selectedTask={selectedTask}
+            getTasks={() => fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks))}
           />
           <button onClick={() => { setIsEditing(false);  setSeletedTask({})}} className={classes["close-btn"]}>
             Cancel

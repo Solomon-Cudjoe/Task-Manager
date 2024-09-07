@@ -15,7 +15,8 @@ const TaskForm = ({
   selectedTask,
   categories,
   getTags,
-  handleTaskEdit
+  handleTaskEdit,
+  getTasks
 }) => {
   const [taskForm, setTaskForm] = useState({
     title: "",
@@ -54,6 +55,7 @@ const TaskForm = ({
       handleTaskEdit(user._id, selectedTask._id, taskForm)
       .then((response) => {
         setFeedback(response);
+        getTasks();
         handleModalClose();
       })
       .catch((err) => {
@@ -63,6 +65,7 @@ const TaskForm = ({
       handleTaskCreation(user._id, taskForm)
       .then((response) => {
         setFeedback(response);
+        getTasks();
         handleModalClose();
       })
       .catch((err) => {
