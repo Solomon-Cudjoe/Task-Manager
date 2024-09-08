@@ -1,16 +1,16 @@
 .task-card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   width: 80%;
   height: 10%;
   background: #fff;
-
   margin-top: 20px;
   border: 1px solid #c3c0fa;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgb(219, 218, 245);
+  padding: 1rem;
 }
 
 .addTask-btn {
