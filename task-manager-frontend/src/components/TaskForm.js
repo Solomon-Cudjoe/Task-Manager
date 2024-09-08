@@ -30,9 +30,10 @@ const TaskForm = ({ user }) => {
 
     console.log(taskForm);
     await axios
-      .post(`http://localhost:5001/task/${user._id}`, taskForm)
+      .post(`http://localhost:5001/tasks/${user._id}`, taskForm)
       .then((response) => {
         console.log(response.data);
+        console.log(user);
         if (response.data.error) {
           alert(response.data.error);
         } else {
