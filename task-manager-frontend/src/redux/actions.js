@@ -86,6 +86,60 @@ export const checkAuth = () => {
     }
 }
 
+export const forgotPassword = (email) => {
+    return async (dispatch) => {
+        try {
+            const res = await axios.get(`${process.env.REACT_APP_SERVER}/auth/forgot-password/${email}`, {
+                withCredentials: true
+            });
+            return Promise.resolve(res.data);
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+export const resetPassword = (token,password) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.put(`${process.env.REACT_APP_SERVER}/auth/reset-password/${token}`, { password });
+            if (!response.data.error) {
+                return Promise.resolve(response.data);
+            } else {
+                return Promise.reject(response.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+export const getVerificationToken = (email) => {
+    return async (dispatch) => {
+        try {
+            const res = await axios.get(`${process.env.REACT_APP_SERVER}/auth/get-token/${email}`, {
+                withCredentials: true
+            });
+            return Promise.resolve(res.data);
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+export const verifiyUser = (token) => {
+    return async (dispatch) => {
+        try {
+            const res = await axios.get(`${process.env.REACT_APP_SERVER}/auth/verify-user/${token}`, {
+                withCredentials: true
+            });
+            return Promise.resolve(res.data);
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    } 
+}
+
 export const handleLogout = () => {
     return async (dispatch) => {
         try {

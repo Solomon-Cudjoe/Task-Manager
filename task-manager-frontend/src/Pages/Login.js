@@ -10,6 +10,7 @@ import { handleLogin } from "../redux/actions";
 import getGoogleOAuth from "../utils/google";
 
 const Login = ({ handleLogin }) => {
+  const [feedback, setFeedback] = useState(null);
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -25,11 +26,12 @@ const Login = ({ handleLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     handleLogin(credentials)
-      .then(() => {
-        navigate("/");
+      .then((res) => {
+        setFeedback(res);
+        setTimeout(() => navigate("/"), 1000); 
       })
       .catch((e) => {
-        alert(e);
+        setFeedback(e);
       });
   };
   return (
@@ -50,7 +52,7 @@ const Login = ({ handleLogin }) => {
             placeholder="Password"
             onChange={handleChange}
           />
-          <Link>Forgot Password?</Link>
+          <Link to='/forgot-password'>Forgot Password?</Link>
         </form>
         <button
           type="submit"

@@ -1,0 +1,60 @@
+.profileCard {
+  position: absolute;
+  padding: 1rem;
+  padding-bottom: 10rem;
+  box-shadow: 0 2px 8px rgb(219, 218, 245);
+  border-radius: 14px;
+  background-color: white;
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+  top: 90px;
+  right: 80px;
+}
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  border: 1px solid #c3c0fa;
+  box-shadow: 0 2px 8px rgb(219, 218, 245);
+  border-radius: 100%;
+  cursor: pointer;
+}
+.account-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+.text {
+  margin-left: 20px;
+  font-size: 16px;
+  margin-top: -25px;
+  font-weight: 400;
+}
+
+.logout-btn {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  background: #f34346;
+  color: #fff;
+  border: none;
+  width: 100px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 16px;
+  padding: 10px;
+  position: absolute;
+  margin-top: 240px;
+}

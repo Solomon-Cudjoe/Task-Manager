@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import "./App.css";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
@@ -10,25 +10,36 @@ import { useEffect, useState } from "react";
 import { checkAuth } from "./redux/actions";
 import MessageBox from "./utils/MessageBox";
 import Loading from "./utils/Loading";
+import PasswordReset from "./components/PasswordReset";
 
 function App({ checkAuth, authenticated }) {
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
-    checkAuth().then((res) => {
-      setFeedback(res);
-      setLoading(false);
-    }).catch((e) => {
-      setFeedback(e);
-      setLoading(false);
-    });
-  }, [checkAuth]);
+    if (
+      location.pathname !== "forgot-password" &&
+      location.pathname !== "forgot-password/:token"
+    ) {
+      checkAuth()
+        .then((res) => {
+          setFeedback(res);
+          setLoading(false);
+        })
+        .catch((e) => {
+          setFeedback(e);
+          setLoading(false);
+        });
+    }
+  }, [checkAuth, location]);
 
   return (
     <>
-      {loading && (<Loading/>)}
-      {feedback && (<MessageBox data={feedback} onClose={ () => setFeedback(null)  }/>)}
+      {loading && <Loading />}
+      {feedback && (
+        <MessageBox data={feedback} onClose={() => setFeedback(null)} />
+      )}
       <Routes>
         <Route
           path="/Login"
@@ -41,6 +52,14 @@ function App({ checkAuth, authenticated }) {
         <Route
           path="/"
           element={!authenticated ? <Navigate to={"/Login"} /> : <Home />}
+        />
+        <Route
+          path="/forgot-password/:token"
+          element={authenticated ? <Navigate to={"/"} /> : <PasswordReset />}
+        />
+        <Route
+          path="/forgot-password"
+          element={authenticated ? <Navigate to={"/"} /> : <PasswordReset />}
         />
       </Routes>
     </>

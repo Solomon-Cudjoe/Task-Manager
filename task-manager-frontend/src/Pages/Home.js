@@ -26,13 +26,15 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
 
   useEffect(() => {
     setLoading(true);
-    fetchTasks(user._id).then((res) => {
-      setFilteredTasks(res.tasks);
-      setLoading(false);
-    }).catch((e) => {
-      setLoading(false);
-      setFeedback(e)
-    })
+    fetchTasks(user._id)
+      .then((res) => {
+        setFilteredTasks(res.tasks);
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setFeedback(e);
+      });
   }, [fetchTasks, user]);
 
   const handleModalOpen = () => {
@@ -49,34 +51,39 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   };
 
   const handleSearch = (keyword) => {
-    const newTasks = tasks.filter((task) => task.title.toLowerCase().includes(keyword.toLowerCase()));
+    const newTasks = tasks.filter((task) =>
+      task.title.toLowerCase().includes(keyword.toLowerCase())
+    );
     setFilteredTasks(newTasks);
-  }
+  };
 
   const onEditClick = (task) => {
     setSeletedTask(task);
     setIsEditing(true);
-  }
+  };
 
   const onCheckClick = (taskId) => {
-    changeStatus(user._id, taskId).then((res) => {
-      setFeedback(res);
-      fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks));
-    }).catch((e) => {
-      console.log(e);
-      setFeedback(e);
-    })
-  }
+    changeStatus(user._id, taskId)
+      .then((res) => {
+        setFeedback(res);
+        fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks));
+      })
+      .catch((e) => {
+        console.log(e);
+        setFeedback(e);
+      });
+  };
 
   const handleDelete = (taskId) => {
-    onDelete(user._id, taskId).then((res) => {
-      setFeedback(res);
-      fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks));
-    }).catch((e) => {
-      setFeedback(e);
-    })
-  }
-
+    onDelete(user._id, taskId)
+      .then((res) => {
+        setFeedback(res);
+        fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks));
+      })
+      .catch((e) => {
+        setFeedback(e);
+      });
+  };
 
   return (
     <>
@@ -85,39 +92,55 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
         <MessageBox data={feedback} onClose={() => setFeedback(null)} />
       )}
       <div className={classes.home}>
-        <Navbar handleSearch={ handleSearch } />
+        <Navbar handleSearch={handleSearch} user={user} />
         <Card>
-          {filteredTasks.length !== 0 ? filteredTasks.map((task, index) => (
+          {filteredTasks.length !== 0 ? (
+            filteredTasks.map((task, index) => (
               <TaskCard key={index}>
                 <div className={classes.task}>
-                  <p><b>Title</b> : {task.title}</p>
-                  <p><b>Description</b> : {task.description}</p>
-                  <p><b>Due Date</b> : {DateToString(task.dueDate)}</p>
-                  <p><b>Priority</b> : {task.priority}</p>
-                  <p><b>Status</b> : { task.status }</p>
+                  <p>
+                    <b>Title</b> : {task.title}
+                  </p>
+                  <p>
+                    <b>Description</b> : {task.description}
+                  </p>
+                  <p>
+                    <b>Due Date</b> : {DateToString(task.dueDate)}
+                  </p>
+                  <p>
+                    <b>Priority</b> : {task.priority}
+                  </p>
+                  <p>
+                    <b>Status</b> : {task.status}
+                  </p>
                 </div>
                 <div className={classes.actions}>
-                  <button className={classes["edit-btn"]} onClick={() => onEditClick(task)}>
+                  <button
+                    className={classes["edit-btn"]}
+                    onClick={() => onEditClick(task)}
+                  >
                     <FaRegPenToSquare />
                   </button>
 
-                <button
-                  className={classes["delete-btn"]}
-                  onClick={() => handleDelete(task._id)}
-                >
-                  <FiTrash />
-                </button>
+                  <button
+                    className={classes["delete-btn"]}
+                    onClick={() => handleDelete(task._id)}
+                  >
+                    <FiTrash />
+                  </button>
 
-                <button className={classes["check-btn"]} onClick={() => onCheckClick(task._id)}>
+                  <button
+                    className={classes["check-btn"]}
+                    onClick={() => onCheckClick(task._id)}
+                  >
                     <FaCheck />
                   </button>
                 </div>
               </TaskCard>
-          ))
-            :
+            ))
+          ) : (
             <p>No tasks available</p>
-          }
-          
+          )}
         </Card>
 
         <div>
@@ -127,7 +150,10 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
 
       {isModalOpen && (
         <Modal onClose={handleModalClose}>
-          <TaskForm handleModalClose={handleModalClose} setFeedback={setFeedback} />
+          <TaskForm
+            handleModalClose={handleModalClose}
+            setFeedback={setFeedback}
+          />
           <button onClick={handleModalClose} className={classes["close-btn"]}>
             Cancel
           </button>
@@ -135,15 +161,31 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
       )}
 
       {isEditing && (
-        <Modal onClose={() => { setIsEditing(false);  setSeletedTask({})}}>
+        <Modal
+          onClose={() => {
+            setIsEditing(false);
+            setSeletedTask({});
+          }}
+        >
           <TaskForm
-            handleModalClose={() => { setIsEditing(false); setSeletedTask({}) }}
+            handleModalClose={() => {
+              setIsEditing(false);
+              setSeletedTask({});
+            }}
             setFeedback={setFeedback}
             isEditing={isEditing}
             selectedTask={selectedTask}
-            getTasks={() => fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks))}
+            getTasks={() =>
+              fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks))
+            }
           />
-          <button onClick={() => { setIsEditing(false);  setSeletedTask({})}} className={classes["close-btn"]}>
+          <button
+            onClick={() => {
+              setIsEditing(false);
+              setSeletedTask({});
+            }}
+            className={classes["close-btn"]}
+          >
             Cancel
           </button>
         </Modal>

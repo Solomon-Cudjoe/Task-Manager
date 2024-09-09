@@ -4,8 +4,9 @@ import { connect } from "react-redux";
 import classes from "./Navbar.module.css";
 import { IoPersonOutline } from "react-icons/io5";
 import { GoSun } from "react-icons/go";
-import { IoExitOutline } from "react-icons/io5";
+
 import { FaBell } from "react-icons/fa6";
+import ProfileCard from "./ProfileCard";
 
 import { getNotifications, handleLogout } from "../redux/actions";
 
@@ -21,6 +22,13 @@ const Navbar = ({
 }) => {
   const [keyword, setKeyword] = useState("");
   const [openNotifications, setOpenNotifications] = useState(false);
+
+  const [showProfile, setShowProfile] = useState(false);
+
+  const toggleProfile = () => {
+    setShowProfile(!showProfile);
+  };
+
   const logout = () => {
     handleLogout()
       .then((res) => {
@@ -72,9 +80,11 @@ const Navbar = ({
           </div>
 
           <div className={classes.right}>
-            <div className={classes.profile}>
+            <div className={classes.profile} onClick={toggleProfile}>
               <IoPersonOutline size={40} />
             </div>
+
+            {showProfile && <ProfileCard user={user} onClose={toggleProfile} />}
 
             <div style={{ display: "flex", gap: "1rem" }}>
               <button className={classes["mode-btn"]}>
@@ -85,10 +95,6 @@ const Navbar = ({
                 onClick={handleNotifications}
               >
                 <FaBell size={20} />
-              </button>
-              <button className={classes["logout-btn"]} onClick={logout}>
-                <IoExitOutline size={20} />
-                Logout
               </button>
 
               {openNotifications && (
@@ -102,10 +108,11 @@ const Navbar = ({
                   }}
                 >
                   {notifications.map((not, index) => (
-                    <div key={index}>
-                      <p>Title : {not.title}</p>
+                    <div key={index} className={classes.notification}>
+                      <span>{` ${not.message}, kindly attend to it.`}</span>
+                      {/* <p>Title : {not.title}</p>
                       <p>Message : {not.message}</p>
-                      <p>Status: {not.status || "Unread"}</p>
+                      <p>Status: {not.status || "Unread"}</p> */}
                     </div>
                   ))}
                 </div>
@@ -122,7 +129,7 @@ Navbar.propTypes = {
   handleLogout: PropTypes.func,
   getNotifications: PropTypes.func,
   user: PropTypes.object,
-  notifications: PropTypes.object,
+  notifications: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
