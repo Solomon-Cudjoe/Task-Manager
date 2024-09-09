@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SET_AUTHENTICATED, SET_TASKS, SET_USER } from "./constants";
+import { SET_AUTHENTICATED, SET_TASKS, SET_USER, SET_CATEGORIES, SET_NOTIFICATIONS } from "./constants";
 
 
 //Setters
@@ -18,6 +18,17 @@ export const setTasks = (tasks) => ({
     type: SET_TASKS,
     payload: tasks
 })
+
+export const setCategories = (categories) => ({
+    type: SET_CATEGORIES,
+    payload: categories
+})
+
+export const setNotifications = (notifications) => ({
+    type: SET_NOTIFICATIONS,
+    payload: notifications
+})
+
 
 
 
@@ -109,6 +120,38 @@ export const fetchTasks = (userId) => {
     }
 }
 
+export const handleTaskCreation = (userId, credentials) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.post(`http://localhost:5001/tasks/${userId}`, credentials);
+            if (!response.data.error) {
+                dispatch(fetchTasks(userId));
+                return Promise.resolve(response.data);
+            } else {
+                return Promise.reject(response.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+export const handleTaskEdit = (userId, taskId, credentials) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.put(`http://localhost:5001/tasks/${userId}/${taskId}`, credentials);
+            if (!response.data.error) {
+                dispatch(fetchTasks(userId));
+                return Promise.resolve(response.data);
+            } else {
+                return Promise.reject(response.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
 export const changeStatus = (userId, taskId) => {
     return async (dispatch) => {
         try {
@@ -131,6 +174,42 @@ export const onDelete = (userId, taskId) => {
             const response = await axios.delete(`${process.env.REACT_APP_SERVER}/tasks/${userId}/${taskId}`);
             if (!response.data.error) {
                 dispatch(fetchTasks(userId));
+                return Promise.resolve(response.data);
+            } else {
+                return Promise.reject(response.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+//TAGS
+
+export const getTags = () => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER}/tags`);
+            if (!response.data.error) {
+                dispatch(setCategories(response.data.categories));
+                return Promise.resolve(response.data);
+            } else {
+                return Promise.reject(response.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+//NOTIFICATIONS
+
+export const getNotifications = (userId) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER}/notifications/${userId}`);
+            if (!response.data.error) {
+                dispatch(setNotifications(response.data.notifications));
                 return Promise.resolve(response.data);
             } else {
                 return Promise.reject(response.data);
