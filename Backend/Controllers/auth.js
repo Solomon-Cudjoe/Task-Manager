@@ -92,12 +92,46 @@ exports.google = async (req, res) => {
     user.password = undefined;
     user.secret = undefined;
     const { password, secret, ...rest } = user._doc;
-    req.session.isAuth = true;
     req.session.user = rest;
     res.redirect(process.env.FRONTEND_URL);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
+  const { id_token, access_token } = await oauth(code);
+  if (!id_token || !access_token) {
+    return res
+      .status(400)
+      .json({ error: "Failed to retrieve tokens from OAuth" });
+  }
+  const googleUser = await getGoogleUser(id_token, access_token);
+  if (!googleUser || !googleUser.email) {
+    return res
+      .status(400)
+      .json({ error: "Failed to retrieve user information from Google" });
+  }
+  const user = await User.findOneAndUpdate(
+    { email: googleUser.email },
+    {
+      email: googleUser.email,
+      firstName: googleUser.given_name,
+      lastName: googleUser.family_name,
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+
+  if (!user) {
+    return res.status(409).json({ error: "User not found" });
+  }
+
+  user.password = undefined;
+  user.secret = undefined;
+  const { password, secret, ...rest } = user._doc;
+  req.session.isAuth = true;
+  req.session.user = rest;
+  res.redirect(process.env.FRONTEND_URL);
 };
 
 exports.login = async (req, res) => {
@@ -123,7 +157,6 @@ exports.login = async (req, res) => {
       exists.password = undefined;
       exists.secret = undefined;
       const { password, secret, ...rest } = exists._doc;
-      req.session.isAuth = true;
       req.session.user = rest;
       return res.status(200).json({
         message: "Login Successful",
@@ -138,10 +171,10 @@ exports.login = async (req, res) => {
 
 //auth middleware
 exports.isAuth = (req, res, next) => {
-  if (req.session.isAuth) {
+  if (req.session.user) {
     next();
   } else {
-    return res.status(403).json({ error: "Please Login" });
+    return res.status(403).json({ error: "Not authenticated" });
   }
 };
 
@@ -298,17 +331,10 @@ exports.editProfile = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
-  console.log("Session before destroy:", req.sessionID);
-  try {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ error: "Failed to logout" });
-      }
-      console.log("Session destroyed:", req.sessionID);
-      res.clearCookie("connect.sid", { path: "/" });
-      return res.status(200).json({ message: "Logout successful" });
-    });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to logout" });
+    }
+    return res.status(200).json({ message: "Logout successful" });
+  });
 };

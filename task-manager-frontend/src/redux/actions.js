@@ -143,7 +143,7 @@ export const verifiyUser = (token) => {
 export const handleLogout = () => {
     return async (dispatch) => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_SERVER}/auth/logout`, {
+            const response = await axios.post(`${process.env.REACT_APP_SERVER}/auth/logout`, {}, {
                 withCredentials: true
             })
             dispatch(setUser(null));
@@ -155,7 +155,6 @@ export const handleLogout = () => {
         }
     }
 }
-
 
 //Tasks
 export const fetchTasks = (userId) => {
