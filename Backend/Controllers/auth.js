@@ -84,7 +84,6 @@ exports.google = async (req, res) => {
         user.password = undefined;
         user.secret = undefined;
         const { password, secret, ...rest } = user._doc;
-        req.session.isAuth = true;
         req.session.user = rest;
         res.redirect(process.env.FRONTEND_URL);
     } catch (err) {
@@ -115,7 +114,6 @@ exports.login = async (req, res) => {
       exists.password = undefined;
       exists.secret = undefined;
       const { password, secret, ...rest } = exists._doc;
-      req.session.isAuth = true;
       req.session.user = rest;
       return res.status(200).json({
         message: "Login Successful",
@@ -130,11 +128,10 @@ exports.login = async (req, res) => {
 
 //auth middleware
 exports.isAuth = (req, res, next) => {
-
-    if (req.session.isAuth) {
+    if (req.session.user) {
         next()
     } else {
-        return res.status(403).json({ error: "Please Login" });
+        return res.status(403).json({ error: "Not authenticated" });
     }
 }
 
@@ -291,17 +288,10 @@ exports.editProfile = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
-  console.log("Session before destroy:", req.sessionID);
-  try {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ error: "Failed to logout" });
-      }
-      console.log("Session destroyed:", req.sessionID);
-      res.clearCookie("connect.sid", { path: "/" });
-      return res.status(200).json({ message: "Logout successful" });
-    });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to logout" });
+    }
+    return res.status(200).json({ message: "Logout successful" });
+  });
 };
