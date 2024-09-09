@@ -101,7 +101,7 @@ Navbar.propTypes = {
   handleLogout: PropTypes.func,
   getNotifications: PropTypes.func,
   user: PropTypes.object,
-  notifications: PropTypes.object
+  notifications: PropTypes.array
 };
 
 const mapStateToProps = (state) => ({
