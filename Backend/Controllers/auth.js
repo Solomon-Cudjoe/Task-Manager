@@ -97,41 +97,36 @@ exports.google = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-  const { id_token, access_token } = await oauth(code);
-  if (!id_token || !access_token) {
-    return res
-      .status(400)
-      .json({ error: "Failed to retrieve tokens from OAuth" });
-  }
-  const googleUser = await getGoogleUser(id_token, access_token);
-  if (!googleUser || !googleUser.email) {
-    return res
-      .status(400)
-      .json({ error: "Failed to retrieve user information from Google" });
-  }
-  const user = await User.findOneAndUpdate(
-    { email: googleUser.email },
-    {
-      email: googleUser.email,
-      firstName: googleUser.given_name,
-      lastName: googleUser.family_name,
-    },
-    {
-      upsert: true,
-      new: true,
-    }
-  );
 
-  if (!user) {
-    return res.status(409).json({ error: "User not found" });
-  }
+  // const googleUser = await getGoogleUser(id_token, access_token);
+  // if (!googleUser || !googleUser.email) {
+  //   return res
+  //     .status(400)
+  //     .json({ error: "Failed to retrieve user information from Google" });
+  // }
+  //   const user = await User.findOneAndUpdate(
+  //     { email: googleUser.email },
+  //     {
+  //       email: googleUser.email,
+  //       firstName: googleUser.given_name,
+  //       lastName: googleUser.family_name,
+  //     },
+  //     {
+  //       upsert: true,
+  //       new: true,
+  //     }
+  //   );
 
-  user.password = undefined;
-  user.secret = undefined;
-  const { password, secret, ...rest } = user._doc;
-  req.session.isAuth = true;
-  req.session.user = rest;
-  res.redirect(process.env.FRONTEND_URL);
+  //   if (!user) {
+  //     return res.status(409).json({ error: "User not found" });
+  //   }
+
+  //   user.password = undefined;
+  //   user.secret = undefined;
+  //   const { password, secret, ...rest } = user._doc;
+  //   req.session.isAuth = true;
+  //   req.session.user = rest;
+  //   res.redirect(process.env.FRONTEND_URL);
 };
 
 exports.login = async (req, res) => {
