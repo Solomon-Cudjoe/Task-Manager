@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import classes from "./TaskCard.module.css";
-import { getTags, handleTaskCreation, handleTaskEdit } from "../redux/actions";
+import {
+  fetchTasks,
+  getTags,
+  handleTaskCreation,
+  handleTaskEdit,
+} from "../redux/actions";
 
 const TaskForm = ({
   user,
@@ -16,28 +21,28 @@ const TaskForm = ({
   categories,
   getTags,
   handleTaskEdit,
-  getTasks
+  fetchTasks,
 }) => {
   const [taskForm, setTaskForm] = useState({
     title: "",
     description: "",
     dueDate: null,
     priority: "low",
-    category: ''
+    category: "",
   });
 
   useEffect(() => {
-    getTags().catch(e => alert(e.rror))
+    getTags().catch((e) => alert(e.rror));
     if (isEditing) {
       setTaskForm({
         title: selectedTask.title,
         description: selectedTask.description,
         dueDate: selectedTask.dueDate,
         priority: selectedTask.priority,
-        category: selectedTask.categories ? selectedTask.categories : ''
-      })
+        category: selectedTask.categories ? selectedTask.categories : "",
+      });
     }
-  },[isEditing, selectedTask, getTags, setTaskForm])
+  }, [isEditing, selectedTask, getTags, setTaskForm]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTaskForm({ ...taskForm, [name]: value });
@@ -48,29 +53,28 @@ const TaskForm = ({
     setTaskForm({ ...taskForm, dueDate: date });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isEditing) {
       handleTaskEdit(user._id, selectedTask._id, taskForm)
-      .then((response) => {
-        setFeedback(response);
-        getTasks();
-        handleModalClose();
-      })
-      .catch((err) => {
-        setFeedback(err);
-      });
+        .then((response) => {
+          setFeedback(response);
+          fetchTasks(user._id);
+          handleModalClose();
+        })
+        .catch((err) => {
+          setFeedback(err);
+        });
     } else {
       handleTaskCreation(user._id, taskForm)
-      .then((response) => {
-        setFeedback(response);
-        getTasks();
-        handleModalClose();
-      })
-      .catch((err) => {
-        setFeedback(err);
-      });
+        .then((response) => {
+          setFeedback(response);
+          fetchTasks(user._id);
+          handleModalClose();
+        })
+        .catch((err) => {
+          setFeedback(err);
+        });
     }
   };
 
@@ -114,32 +118,34 @@ const TaskForm = ({
           <option value="high">High</option>
         </select>
 
-        {
-          isEditing && (
-            <select
-              name="category"
-              onChange={handleChange}
-              value={taskForm.category ? taskForm.category : '' }
-              className={classes.select}
-            >
-              <option value='' disabled >Select Category</option>
-              {categories.map((cat, index) => (
-                <option
-                  key={index}
-                  value={cat._id}
-                  style={{ textTransform: 'capitalize' }}
-                >{cat.name}</option>
-              ))}
-            </select>
-          )
-        }
+        {isEditing && (
+          <select
+            name="category"
+            onChange={handleChange}
+            value={taskForm.category ? taskForm.category : ""}
+            className={classes.select}
+          >
+            <option value="" disabled>
+              Select Category
+            </option>
+            {categories.map((cat, index) => (
+              <option
+                key={index}
+                value={cat._id}
+                style={{ textTransform: "capitalize" }}
+              >
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        )}
       </form>
       <button
         type="submit"
         className={classes["addTask-btn"]}
         onClick={handleSubmit}
       >
-        { isEditing ? 'Save' : "Add" }
+        {isEditing ? "Save" : "Add"}
       </button>
     </div>
   );
@@ -147,13 +153,17 @@ const TaskForm = ({
 
 TaskForm.propTypes = {
   user: PropTypes.object,
-  handleTaskCreation: PropTypes.func
-}
+  handleTaskCreation: PropTypes.func,
+};
 
 const mapStateToProps = (state) => ({
   user: state.user,
-  categories: state.categories
-})
+  categories: state.categories,
+});
 
-
-export default connect(mapStateToProps, {handleTaskCreation, getTags, handleTaskEdit})(TaskForm)
+export default connect(mapStateToProps, {
+  handleTaskCreation,
+  getTags,
+  fetchTasks,
+  handleTaskEdit,
+})(TaskForm);
