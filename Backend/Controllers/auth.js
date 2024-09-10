@@ -89,49 +89,11 @@ exports.google = async (req, res) => {
       return res.status(409).json({ error: "User not found" });
     }
 
-    user.password = undefined;
-    user.secret = undefined;
-    const { password, secret, ...rest } = user._doc;
-    req.session.user = rest;
+    req.session.user = user._id;
     res.redirect(process.env.FRONTEND_URL);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-  const { id_token, access_token } = await oauth(code);
-  if (!id_token || !access_token) {
-    return res
-      .status(400)
-      .json({ error: "Failed to retrieve tokens from OAuth" });
-  }
-  const googleUser = await getGoogleUser(id_token, access_token);
-  if (!googleUser || !googleUser.email) {
-    return res
-      .status(400)
-      .json({ error: "Failed to retrieve user information from Google" });
-  }
-  const user = await User.findOneAndUpdate(
-    { email: googleUser.email },
-    {
-      email: googleUser.email,
-      firstName: googleUser.given_name,
-      lastName: googleUser.family_name,
-    },
-    {
-      upsert: true,
-      new: true,
-    }
-  );
-
-  if (!user) {
-    return res.status(409).json({ error: "User not found" });
-  }
-
-  user.password = undefined;
-  user.secret = undefined;
-  const { password, secret, ...rest } = user._doc;
-  req.session.isAuth = true;
-  req.session.user = rest;
-  res.redirect(process.env.FRONTEND_URL);
 };
 
 exports.login = async (req, res) => {
@@ -157,7 +119,7 @@ exports.login = async (req, res) => {
       exists.password = undefined;
       exists.secret = undefined;
       const { password, secret, ...rest } = exists._doc;
-      req.session.user = rest;
+      req.session.user = rest._id;
       return res.status(200).json({
         message: "Login Successful",
         user: rest,
@@ -179,8 +141,12 @@ exports.isAuth = (req, res, next) => {
 };
 
 exports.authenticate = async (req, res) => {
-  const { user } = req.session;
-  return res.status(200).json({ message: "Authenticated", user });
+  const userId  = req.session.user;
+  const user = await User.findById(userId);
+  user.password = undefined;
+  user.secret = undefined;
+  const { password, secret, ...rest } = user._doc;
+  return res.status(200).json({ message: "Authenticated", user: rest });
 };
 
 exports.getToken = async (req, res) => {
