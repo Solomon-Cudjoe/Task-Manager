@@ -22,30 +22,24 @@ const Navbar = ({
 }) => {
   const [keyword, setKeyword] = useState("");
   const [openNotifications, setOpenNotifications] = useState(false);
-
   const [showProfile, setShowProfile] = useState(false);
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
-  };
-
-  const logout = () => {
-    handleLogout()
-      .then((res) => {
-        console.log(res);
-        alert(res.message);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    setOpenNotifications(false);
   };
 
   const handleNotifications = () => {
-    getNotifications(user._id)
-      .then(() => {
-        setOpenNotifications(!openNotifications);
-      })
-      .catch((e) => alert(e.error));
+    setShowProfile(false);
+    if (!openNotifications) {
+      getNotifications(user._id)
+        .then(() => {
+          setOpenNotifications(!openNotifications);
+        })
+        .catch((e) => alert(e.error));
+    } else {
+      setOpenNotifications(!openNotifications);
+    }
   };
 
   const onInputChange = (e) => {

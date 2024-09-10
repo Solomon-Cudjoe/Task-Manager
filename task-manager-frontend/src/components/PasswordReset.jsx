@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Box, Button, TextField, Typography } from '@mui/material';
@@ -32,17 +32,15 @@ const PasswordReset = ({forgotPassword, resetPassword}) => {
     const [feedback, setFeedback] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log(token);
-    }, [token]);
-
   const handleTokenRequest = () => {
       setLoading(true)
       if(email !== ''){
         forgotPassword(email).then((res) => {
           setFeedback(res);
           setEmail('');
-          navigate('/login')
+          setTimeout(() => {
+            navigate('/login'); 
+          }, 2000)
         }).catch(e => { setFeedback(e);  setLoading(false)});
       } else {
         setFeedback({ error: 'Email is required' });
@@ -63,7 +61,9 @@ const PasswordReset = ({forgotPassword, resetPassword}) => {
           setFeedback(res);
           setPassword('');
           setConfirmPassword('');
-          navigate('/login')
+          setTimeout(() => {
+            navigate('/login'); 
+          }, 2000)
         }).catch(e => { setFeedback(e);  setLoading(false)} )
       }
   }

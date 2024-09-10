@@ -225,7 +225,9 @@ exports.verifyUser = async (req, res) => {
     user.verified = true;
 
     await user.save();
-
+    if (req.session.user) {
+      req.session.user.verified = true;
+    }
     return res.status(200).json({ message: "Verification Successful" });
   } catch (err) {
     console.log(err);

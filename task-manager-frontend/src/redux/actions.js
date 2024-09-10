@@ -127,10 +127,10 @@ export const getVerificationToken = (email) => {
     }
 }
 
-export const verifiyUser = (token) => {
+export const verifyUser = (token) => {
     return async (dispatch) => {
         try {
-            const res = await axios.get(`${process.env.REACT_APP_SERVER}/auth/verify-user/${token}`, {
+            const res = await axios.put(`${process.env.REACT_APP_SERVER}/auth/verify-user/${token}`, {
                 withCredentials: true
             });
             return Promise.resolve(res.data);

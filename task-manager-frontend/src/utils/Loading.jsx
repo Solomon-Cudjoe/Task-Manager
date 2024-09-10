@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
@@ -55,9 +55,6 @@ const Loading = () => {
           <div></div>
           <div></div>
         </Box>
-        <Typography variant="h6" color="textPrimary" mt={2}>
-          Please wait
-        </Typography>
       </Box>
     </Box>
   );
