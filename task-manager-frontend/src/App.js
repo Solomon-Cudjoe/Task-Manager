@@ -12,6 +12,7 @@ import MessageBox from "./utils/MessageBox";
 import Loading from "./utils/Loading";
 import PasswordReset from "./components/PasswordReset";
 import Verify from "./utils/Verify";
+import AccountInfo from "./Pages/AccountInfo";
 
 function App({ checkAuth, authenticated }) {
   const effectRef = useRef(false);
@@ -35,12 +36,12 @@ function App({ checkAuth, authenticated }) {
           });
       }
 
-      effectRef.current = true
+      effectRef.current = true;
     }
   }, [checkAuth, location]);
 
   return (
-    <>
+    <div className="App">
       {loading && <Loading />}
       {feedback && (
         <MessageBox data={feedback} onClose={() => setFeedback(null)} />
@@ -66,12 +67,11 @@ function App({ checkAuth, authenticated }) {
           path="/forgot-password"
           element={authenticated ? <Navigate to={"/"} /> : <PasswordReset />}
         />
-        <Route
-          path="/verify/:token"
-          element={<Verify/>}
-        />
+        <Route path="/verify/:token" element={<Verify />} />
+
+        <Route path="/account-info" element={<AccountInfo />} />
       </Routes>
-    </>
+    </div>
   );
 }
 

@@ -93,6 +93,7 @@ const Navbar = ({
 
               {openNotifications && (
                 <div
+                  className={classes["notification-container"]}
                   style={{
                     position: "absolute",
                     top: "5.7rem",
@@ -102,11 +103,17 @@ const Navbar = ({
                   }}
                 >
                   {notifications.map((not, index) => (
-                    <div key={index} className={classes.notification}>
+                    <div
+                      key={index}
+                      className={classes.notification}
+                      style={{
+                        backgroundColor:
+                          not.status === "read" ? "red" : "#4ECB71",
+                      }}
+                    >
                       <span>{` ${not.message}, kindly attend to it.`}</span>
-                      {/* <p>Title : {not.title}</p>
-                      <p>Message : {not.message}</p>
-                      <p>Status: {not.status || "Unread"}</p> */}
+
+                      <p>Status: {not.status || "Unread"}</p>
                     </div>
                   ))}
                 </div>
