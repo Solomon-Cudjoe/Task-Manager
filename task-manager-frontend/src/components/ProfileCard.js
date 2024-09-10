@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -7,9 +7,11 @@ import { IoPersonOutline } from "react-icons/io5";
 import { FaRegPenToSquare } from "react-icons/fa6";
 import { PiWarningOctagon } from "react-icons/pi";
 import { IoExitOutline } from "react-icons/io5";
-import { handleLogout } from "../redux/actions";
+import { getVerificationToken, handleLogout } from "../redux/actions";
+import MessageBox from "../utils/MessageBox";
 
-const ProfileCard = ({ user, handleLogout, children }) => {
+const ProfileCard = ({ user, handleLogout, children, getVerificationToken }) => {
+  const [feedback, setFeedback] = useState(null)
   const logout = () => {
     handleLogout()
       .then((res) => {
@@ -20,27 +22,34 @@ const ProfileCard = ({ user, handleLogout, children }) => {
         console.log(e);
       });
   };
+
+  const handleGetToken = () => {
+    if (!user.verified) {
+      getVerificationToken(user.email).then((res) => {
+        setFeedback(res);
+      }).catch(e => setFeedback(e));
+    }
+  }
+
   return (
     <>
+      {feedback && <MessageBox data={feedback} onClose={()=>setFeedback(null)}/>}
       <div className={classes.profileCard}>
         {children}
 
         <div className={classes.profile}>
           <IoPersonOutline size={40} />
-          {/* {user?.map((item) => {
-            return <span key={item.id}>{item.firstName}</span>;
-          })} */}
         </div>
-
+        <p>Hi, { user.firstName + ' ' + user.lastName } </p>
         <div className={classes["account-info"]}>
           <Link to="/account-info">
             <FaRegPenToSquare size={20} />
             <h6 className={classes.text}>Edit Account Info</h6>
           </Link>
 
-          <Link to="/account-verification">
-            <PiWarningOctagon size={20} style={{ color: "#FFD233" }} />
-            <h6 className={classes.text}>Account not verified, verify now</h6>
+          <Link onClick={handleGetToken}>
+            <PiWarningOctagon size={20} style={{ color: user.verified ? 'green' :"#FFD233" }} />
+            <h6 className={classes.text}>{ user.verified ? "Verified" : "Account not verified, verify now"}</h6>
           </Link>
 
           <button className={classes["logout-btn"]} onClick={logout}>
@@ -55,14 +64,12 @@ const ProfileCard = ({ user, handleLogout, children }) => {
 
 ProfileCard.propTypes = {
   handleLogout: PropTypes.func,
-  getNotifications: PropTypes.func,
+  getVerificationToken: PropTypes.func,
   user: PropTypes.object,
-  notifications: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
   user: state.user,
-  notifications: state.notifications,
 });
 
-export default connect(mapStateToProps, { handleLogout })(ProfileCard);
+export default connect(mapStateToProps, { handleLogout, getVerificationToken })(ProfileCard);

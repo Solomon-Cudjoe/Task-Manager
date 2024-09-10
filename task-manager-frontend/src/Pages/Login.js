@@ -8,6 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { handleLogin } from "../redux/actions";
 import getGoogleOAuth from "../utils/google";
+import MessageBox from "../utils/MessageBox";
 
 const Login = ({ handleLogin }) => {
   const [feedback, setFeedback] = useState(null);
@@ -24,6 +25,7 @@ const Login = ({ handleLogin }) => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    console.log(credentials);
     e.preventDefault();
     handleLogin(credentials)
       .then((res) => {
@@ -36,6 +38,7 @@ const Login = ({ handleLogin }) => {
   };
   return (
     <div className={classes.login}>
+      {feedback && <MessageBox data={feedback} onClose={()=> setFeedback(null)}/>}
       <Card>
         <form action="" className="login-form">
           <input

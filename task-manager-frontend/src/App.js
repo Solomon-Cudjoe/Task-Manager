@@ -6,31 +6,36 @@ import "./App.css";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Home from "./Pages/Home";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { checkAuth } from "./redux/actions";
 import MessageBox from "./utils/MessageBox";
 import Loading from "./utils/Loading";
 import PasswordReset from "./components/PasswordReset";
+import Verify from "./utils/Verify";
 
 function App({ checkAuth, authenticated }) {
+  const effectRef = useRef(false);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-    if (
-      location.pathname !== "forgot-password" &&
-      location.pathname !== "forgot-password/:token"
-    ) {
-      checkAuth()
-        .then((res) => {
-          setFeedback(res);
-          setLoading(false);
-        })
-        .catch((e) => {
-          setFeedback(e);
-          setLoading(false);
-        });
+    if (effectRef.current === false) {
+      if (
+        location.pathname !== "forgot-password" &&
+        location.pathname !== "forgot-password/:token"
+      ) {
+        checkAuth()
+          .then((res) => {
+            setLoading(false);
+          })
+          .catch((e) => {
+            setFeedback(e);
+            setLoading(false);
+          });
+      }
+
+      effectRef.current = true
     }
   }, [checkAuth, location]);
 
@@ -60,6 +65,10 @@ function App({ checkAuth, authenticated }) {
         <Route
           path="/forgot-password"
           element={authenticated ? <Navigate to={"/"} /> : <PasswordReset />}
+        />
+        <Route
+          path="/verify/:token"
+          element={<Verify/>}
         />
       </Routes>
     </>

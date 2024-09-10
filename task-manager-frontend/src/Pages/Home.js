@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -18,6 +18,7 @@ import Loading from "../utils/Loading";
 
 const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const effectRef = useRef(false)
   const [isModalOpen, setIsModalOpen] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -25,16 +26,21 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   const [selectedTask, setSeletedTask] = useState({});
 
   useEffect(() => {
-    setLoading(true);
-    fetchTasks(user._id)
-      .then((res) => {
-        setFilteredTasks(res.tasks);
-        setLoading(false);
-      })
-      .catch((e) => {
-        setLoading(false);
-        setFeedback(e);
-      });
+    if(effectRef.current === false) {
+      setLoading(true);
+      fetchTasks(user._id)
+        .then((res) => {
+          setFilteredTasks(res.tasks);
+          setLoading(false);
+        })
+        .catch((e) => {
+          setLoading(false);
+          setFeedback(e);
+        });
+      
+      effectRef.current = true;
+    }
+    
   }, [fetchTasks, user]);
 
   const handleModalOpen = () => {
