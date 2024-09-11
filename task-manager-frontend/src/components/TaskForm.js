@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+import classes from "./TaskCard.module.css";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import classes from "./TaskCard.module.css";
 import {
   fetchTasks,
   getTags,
   handleTaskCreation,
   handleTaskEdit,
 } from "../redux/actions";
-
 const TaskForm = ({
   user,
   setFeedback,
@@ -22,7 +22,8 @@ const TaskForm = ({
   getTags,
   handleTaskEdit,
   fetchTasks,
-}) => {
+  setFilteredTasks}) => {
+  const effectRef = useRef(false)
   const [taskForm, setTaskForm] = useState({
     title: "",
     description: "",
@@ -32,21 +33,24 @@ const TaskForm = ({
   });
 
   useEffect(() => {
-    getTags().catch((e) => alert(e.rror));
-    if (isEditing) {
-      setTaskForm({
-        title: selectedTask.title,
-        description: selectedTask.description,
-        dueDate: selectedTask.dueDate,
-        priority: selectedTask.priority,
-        category: selectedTask.categories ? selectedTask.categories : "",
-      });
+    if(effectRef.current === false){
+      getTags()
+      if (isEditing) {
+        setTaskForm({
+          title: selectedTask.title,
+          description: selectedTask.description,
+          dueDate: selectedTask.dueDate,
+          priority: selectedTask.priority,
+          category: selectedTask.category ? selectedTask.category : null
+        })
+      }
+      effectRef.current = true;
     }
-  }, [isEditing, selectedTask, getTags, setTaskForm]);
+    
+  },[isEditing, selectedTask, getTags, setTaskForm]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTaskForm({ ...taskForm, [name]: value });
-    console.log(taskForm);
   };
 
   const handleDateChange = (date) => {
@@ -59,7 +63,9 @@ const TaskForm = ({
       handleTaskEdit(user._id, selectedTask._id, taskForm)
         .then((response) => {
           setFeedback(response);
-          fetchTasks(user._id);
+          fetchTasks(user._id).then((res) => {
+            setFilteredTasks(res.tasks)
+          });
           handleModalClose();
         })
         .catch((err) => {
@@ -69,7 +75,9 @@ const TaskForm = ({
       handleTaskCreation(user._id, taskForm)
         .then((response) => {
           setFeedback(response);
-          fetchTasks(user._id);
+          fetchTasks(user._id).then((res) => {
+            setFilteredTasks(res.tasks)
+          });
           handleModalClose();
         })
         .catch((err) => {

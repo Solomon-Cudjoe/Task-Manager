@@ -158,6 +158,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
           <TaskForm
             handleModalClose={handleModalClose}
             setFeedback={setFeedback}
+            setFilteredTasks={setFilteredTasks}
           />
           <button onClick={handleModalClose} className={classes["close-btn"]}>
             Cancel
@@ -180,9 +181,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
             setFeedback={setFeedback}
             isEditing={isEditing}
             selectedTask={selectedTask}
-            getTasks={() =>
-              fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks))
-            }
+            setFilteredTasks={setFilteredTasks}
           />
           <button
             onClick={() => {

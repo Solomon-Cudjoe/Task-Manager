@@ -4,6 +4,7 @@ const Category = require("../Models/category");
 
 exports.addTask = async (req, res) => {
   const { userId } = req.params;
+  console.log(req.body);
   const { title, description, dueDate, priority } = req.body;
   const user = await User.findById(userId);
   if (!user) {
@@ -12,7 +13,6 @@ exports.addTask = async (req, res) => {
   if (title === "" || title === undefined) {
     return res.status(404).json({ error: "Must add a title" });
   }
-
   const newTask = new Task({
     title,
     description,
@@ -68,6 +68,7 @@ exports.filterWithPriority = async (req, res) => {
 exports.editTask = async (req, res) => {
   const { userId, taskId } = req.params;
   const { title, description, dueDate, priority, category } = req.body;
+  console.log({ title, description, dueDate, priority, category });
 
   const user = await User.findById(userId);
   if (!user) {
@@ -120,57 +121,6 @@ exports.changeStatus = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
   
-};
-
-exports.changePriority = async (req, res) => {
-  try {
-    const { userId, taskId } = req.params;
-    const { priority } = req.body;
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    const task = await Task.findById(taskId);
-    if (!task) {
-      return res.status(404).json({ error: "Task not found" });
-    }
-
-    task.priority = priority.toLowerCase();
-
-    await task.save();
-
-    return res.status(200).json({
-      message: "Successfull",
-      task,
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: err.message });
-  }
-  
-};
-
-exports.assignTag = async (req, res) => {
-  const { userId, taskId } = req.params;
-  const { category } = req.body;
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
-  }
-  const task = await Task.findById(taskId);
-  if (!task) {
-    return res.status(404).json({ error: "Task not found" });
-  }
-
-  task.category = category;
-
-  await task.save();
-
-  return res.status(200).json({
-    message: "Successfull",
-    task,
-  });
 };
 
 //Route For Deleting

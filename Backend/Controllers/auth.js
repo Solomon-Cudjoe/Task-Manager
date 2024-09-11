@@ -89,10 +89,7 @@ exports.google = async (req, res) => {
       return res.status(409).json({ error: "User not found" });
     }
 
-    user.password = undefined;
-    user.secret = undefined;
-    const { password, secret, ...rest } = user._doc;
-    req.session.user = rest;
+    req.session.user = user._id;
     res.redirect(process.env.FRONTEND_URL);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -122,7 +119,7 @@ exports.login = async (req, res) => {
       exists.password = undefined;
       exists.secret = undefined;
       const { password, secret, ...rest } = exists._doc;
-      req.session.user = rest;
+      req.session.user = rest._id;
       return res.status(200).json({
         message: "Login Successful",
         user: rest,
@@ -144,8 +141,12 @@ exports.isAuth = (req, res, next) => {
 };
 
 exports.authenticate = async (req, res) => {
-  const { user } = req.session;
-  return res.status(200).json({ message: "Authenticated", user });
+  const userId  = req.session.user;
+  const user = await User.findById(userId);
+  user.password = undefined;
+  user.secret = undefined;
+  const { password, secret, ...rest } = user._doc;
+  return res.status(200).json({ message: "Authenticated", user: rest });
 };
 
 exports.getToken = async (req, res) => {
