@@ -1,0 +1,27 @@
+.AccountInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  color: #6c63ff;
+  font-size: 24px;
+  margin: 20px;
+}
+label {
+  margin: 20px;
+  color: #c3c0fa;
+}
+
+button {
+  margin: 20px;
+
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  width: 100px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 8px;
+}

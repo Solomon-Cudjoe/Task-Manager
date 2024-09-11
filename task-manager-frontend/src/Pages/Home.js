@@ -18,7 +18,7 @@ import Loading from "../utils/Loading";
 
 const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   const [filteredTasks, setFilteredTasks] = useState(tasks);
-  const effectRef = useRef(false)
+  const effectRef = useRef(false);
   const [isModalOpen, setIsModalOpen] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   const [selectedTask, setSeletedTask] = useState({});
 
   useEffect(() => {
-    if(effectRef.current === false) {
+    if (effectRef.current === false) {
       setLoading(true);
       fetchTasks(user._id)
         .then((res) => {
@@ -37,10 +37,9 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
           setLoading(false);
           setFeedback(e);
         });
-      
+
       effectRef.current = true;
     }
-    
   }, [fetchTasks, user]);
 
   const handleModalOpen = () => {
