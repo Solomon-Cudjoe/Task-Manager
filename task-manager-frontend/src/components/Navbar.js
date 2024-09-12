@@ -3,31 +3,36 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classes from "./Navbar.module.css";
 import { IoPersonOutline } from "react-icons/io5";
-import { GoSun } from "react-icons/go";
+import { GoSun, GoSearch, GoX, GoMoon } from "react-icons/go";
 
 import { FaBell } from "react-icons/fa6";
 import ProfileCard from "./ProfileCard";
 
-import { getNotifications, handleLogout } from "../redux/actions";
+import { getNotifications, setTheme } from "../redux/actions";
 
 // import { IoMoonOutline } from "react-icons/io5";
 // <IoMoonOutline />
 
 const Navbar = ({
-  handleLogout,
   handleSearch,
   user,
   getNotifications,
   notifications,
+  setTheme, theme
 }) => {
   const [keyword, setKeyword] = useState("");
   const [openNotifications, setOpenNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [searchClick, setSearchClick] = useState(false);
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
     setOpenNotifications(false);
   };
+
+  const toggleTheme = () => {
+    theme === 'dark' ? setTheme('light') : setTheme('dark')
+  }
 
   const handleNotifications = () => {
     setShowProfile(false);
@@ -52,7 +57,6 @@ const Navbar = ({
   };
 
   return (
-    <>
       <header className={classes.header}>
         <nav className={classes.nav}>
           <div className={classes.left}>
@@ -69,9 +73,36 @@ const Navbar = ({
               className={classes["search-btn"]}
               onClick={onSearchClick}
             >
-              Search
+              <GoSearch/>
             </button>
           </div>
+          <div className={classes.leftMobile}>
+            <button
+              type="submit"
+              className={classes["search-btn"]}
+              onClick={() => setSearchClick(!searchClick)}
+            >
+              {searchClick ? <GoX/> : <GoSearch/>}
+            </button>
+            <div className={searchClick ? classes.show : classes.mobileSearch }>
+              <input
+                className={classes.input}
+                type="text"
+                name="search"
+                onChange={onInputChange}
+                placeholder="Search Tasks..."
+                autoComplete="false"
+              />
+              <button
+                type="submit"
+                className={classes["search-btn"]}
+                onClick={onSearchClick}
+              >
+                <GoSearch/>
+              </button>
+            </div>
+          </div>
+
 
           <div className={classes.right}>
             <div className={classes.profile} onClick={toggleProfile}>
@@ -81,8 +112,8 @@ const Navbar = ({
             {showProfile && <ProfileCard user={user} onClose={toggleProfile} />}
 
             <div style={{ display: "flex", gap: "1rem" }}>
-              <button className={classes["mode-btn"]}>
-                <GoSun size={20} />
+              <button onClick={toggleTheme} className={classes["mode-btn"]}>
+                {theme === 'dark' ? <GoSun size={20} /> : <GoMoon size={20}/>}
               </button>
               <button
                 className={classes["mode-btn"]}
@@ -97,6 +128,7 @@ const Navbar = ({
                   style={{
                     position: "absolute",
                     top: "5.7rem",
+                    right: '0px',
                     height: "auto",
                     maxHeight: "30rem",
                     overflowY: "auto",
@@ -112,8 +144,6 @@ const Navbar = ({
                       }}
                     >
                       <span>{` ${not.message}, kindly attend to it.`}</span>
-
-                      <p>Status: {not.status || "Unread"}</p>
                     </div>
                   ))}
                 </div>
@@ -122,7 +152,6 @@ const Navbar = ({
           </div>
         </nav>
       </header>
-    </>
   );
 };
 
@@ -136,8 +165,9 @@ Navbar.propTypes = {
 const mapStateToProps = (state) => ({
   user: state.user,
   notifications: state.notifications,
+  theme: state.theme
 });
 
-export default connect(mapStateToProps, { handleLogout, getNotifications })(
+export default connect(mapStateToProps, { getNotifications, setTheme })(
   Navbar
 );

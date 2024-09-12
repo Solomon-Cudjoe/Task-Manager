@@ -7,9 +7,18 @@
 
 .App {
   display: flex;
-
   justify-content: center;
   align-items: flex-start;
+  min-height: 100vh;
+}
 
-  height: 100vh;
+.lightBackground {
+}
+
+.darkBackground {
+  background-color: rgb(31, 48, 48);
+}
+
+.darkBackground2 {
+  background-color: rgb(29, 61, 61);
 }

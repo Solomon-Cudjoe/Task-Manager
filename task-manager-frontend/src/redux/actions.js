@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SET_AUTHENTICATED, SET_TASKS, SET_USER, SET_CATEGORIES, SET_NOTIFICATIONS } from "./constants";
+import { SET_AUTHENTICATED, SET_TASKS, SET_USER, SET_CATEGORIES, SET_NOTIFICATIONS, SET_THEME } from "./constants";
 
 
 //Setters
@@ -29,6 +29,10 @@ export const setNotifications = (notifications) => ({
     payload: notifications
 })
 
+export const setTheme = (theme) => ({
+    type: SET_THEME,
+    payload: theme
+})
 
 
 
@@ -138,6 +142,38 @@ export const verifyUser = (token) => {
             return Promise.reject(err.response.data);
         }
     } 
+}
+
+export const editUser = (userEmail, credentials) => {
+    return async (dispatch) => {
+        try {
+            const res = await axios.put(`${process.env.REACT_APP_SERVER}/auth/${userEmail}`, credentials);
+            if (!res.data.error) {
+                dispatch(checkAuth())
+                return Promise.resolve(res.data);  
+            } else {
+                return Promise.reject(res.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+export const changePassword = (email, password, newPassword) => {
+    return async (dispatch) => {
+        try {
+            const res = await axios.put(`${process.env.REACT_APP_SERVER}/auth/changePassword/${email}`, {password, newPassword});
+            if (!res.data.error) {
+                dispatch(checkAuth())
+                return Promise.resolve(res.data);  
+            } else {
+                return Promise.reject(res.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
 }
 
 export const handleLogout = () => {
@@ -264,6 +300,21 @@ export const getNotifications = (userId) => {
             if (!response.data.error) {
                 dispatch(setNotifications(response.data.notifications));
                 return Promise.resolve(response.data);
+            } else {
+                return Promise.reject(response.data);
+            }
+        } catch (err) {
+            return Promise.reject(err.response.data);
+        }
+    }
+}
+
+export const readNotification = (userId, notificationId) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.put(`${process.env.REACT_APP_SERVER}/notifications/read/${userId}/${notificationId}`);
+            if (!response.data.error) {
+                dispatch(getNotifications(userId));
             } else {
                 return Promise.reject(response.data);
             }

@@ -11,6 +11,7 @@ const {
   authenticate,
   logout,
   isAuth,
+  changePassword,
 } = require("../Controllers/auth");
 const router = Router();
 
@@ -22,6 +23,7 @@ router.put("/verify-user/:token", verifyUser);
 router.get("/forgot-password/:email", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
 router.put("/:userEmail", editProfile);
+router.put("/changePassword/:email", changePassword);
 router.get("/oauth/google", google);
 router.post("/logout", logout);
 

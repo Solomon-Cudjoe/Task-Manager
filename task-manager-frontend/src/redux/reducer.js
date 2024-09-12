@@ -1,4 +1,4 @@
-import { SET_USER, SET_TASKS, SET_AUTHENTICATED, SET_CATEGORIES, SET_NOTIFICATIONS } from "./constants";
+import { SET_USER, SET_TASKS, SET_AUTHENTICATED, SET_CATEGORIES, SET_NOTIFICATIONS, SET_THEME } from "./constants";
 
 const initialState = {
     user: null,
@@ -6,6 +6,7 @@ const initialState = {
     tasks: [],
     categories: [],
     notifications: [],
+    theme: 'light'
 }
 
 export const reducer = (state = initialState, action) => {
@@ -34,6 +35,11 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 notifications: action.payload
+            }
+        case SET_THEME:
+            return {
+                ...state,
+                theme: action.payload
             }
         default:
             return state

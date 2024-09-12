@@ -4,7 +4,7 @@
   justify-content: space-between;
   align-items: flex-start;
   width: 80%;
-  height: 10%;
+  height: auto;
   background: #fff;
   margin-top: 20px;
   border: 1px solid #c3c0fa;
@@ -13,9 +13,12 @@
   padding: 1rem;
 }
 
+button {
+  margin: 0;
+}
+
 .addTask-btn {
   margin: 10px;
-
   background: #6c63ff;
   color: #fff;
   border: none;
@@ -38,17 +41,6 @@
   margin-top: 3px;
 }
 
-/* .datepickerWrapper {
-  margin: 10px 0;
-}
-
-.datepickerWrapper label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: #333;
-} */
-
 .select {
   display: flex;
   justify-content: center;
@@ -67,4 +59,28 @@
 .select:focus {
   border: 1px solid #c3c0fa;
   border-color: #c3c0fa;
+}
+
+@media screen and (max-width: 1200px) {
+  .task-card {
+    width: 85%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .task-card {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .task-card {
+    width: 95%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .task-card {
+    width: 98%;
+  }
 }

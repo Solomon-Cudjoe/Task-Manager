@@ -3,3 +3,4 @@ export const SET_AUTHENTICATED = 'SET_AUTHENTICATED';
 export const SET_TASKS = 'SET_TASKS';
 export const SET_CATEGORIES = "SET_CATEGORIES";
 export const SET_NOTIFICATIONS = "SET_NOTIFICATIONS";
+export const SET_THEME = "SET_THEME";

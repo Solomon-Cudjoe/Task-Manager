@@ -22,6 +22,7 @@ const TaskForm = ({
   getTags,
   handleTaskEdit,
   fetchTasks,
+  active,
   setFilteredTasks}) => {
   const effectRef = useRef(false)
   const [taskForm, setTaskForm] = useState({
@@ -48,6 +49,7 @@ const TaskForm = ({
     }
     
   },[isEditing, selectedTask, getTags, setTaskForm]);
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTaskForm({ ...taskForm, [name]: value });
@@ -64,7 +66,7 @@ const TaskForm = ({
         .then((response) => {
           setFeedback(response);
           fetchTasks(user._id).then((res) => {
-            setFilteredTasks(res.tasks)
+            setFilteredTasks(res.tasks.filter((task) => task.status.toLowerCase().includes(active.toLowerCase())))
           });
           handleModalClose();
         })
@@ -76,7 +78,7 @@ const TaskForm = ({
         .then((response) => {
           setFeedback(response);
           fetchTasks(user._id).then((res) => {
-            setFilteredTasks(res.tasks)
+            setFilteredTasks(res.tasks.filter((task) => task.status.toLowerCase().includes(active.toLowerCase())))
           });
           handleModalClose();
         })

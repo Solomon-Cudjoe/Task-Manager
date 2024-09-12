@@ -274,6 +274,13 @@ exports.editProfile = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const emailTaken = await User.findOne({ email });
+    if ((userEmail !== email) && emailTaken) {
+      return res.status(401).json({
+        error: "Email Taken"
+      })
+    }
+
     if (firstName) {
       user.firstName = firstName;
     }
@@ -286,7 +293,6 @@ exports.editProfile = async (req, res) => {
     if (dateOfBirth) {
       user.dateOfBirth = dateOfBirth;
     }
-
     await user.save();
 
     return res.status(200).json({
@@ -297,6 +303,38 @@ exports.editProfile = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const { password, newPassword } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!password || !newPassword || newPassword.length < 8) {
+      return res.status(404).json({
+        error: "Passwords are required and must be more than 8 characters",
+      });
+    }
+
+    const match = await comparePassword(password, user.password);
+    if (!match) {
+      return res.status(404).json({ error: "Password is incorrect" });
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    user.password = hashedPassword;
+     
+    await user.save();
+    return res.status(200).json({ message: "Password changed" });
+
+  }catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+}
 
 exports.logout = async (req, res) => {
   req.session.destroy((err) => {
