@@ -29,7 +29,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   useEffect(() => {
     if (effectRef.current === false) {
       setLoading(true);
-      fetchTasks(user._id)
+      fetchTasks()
         .then((res) => {
           setFilteredTasks(
             res.tasks.filter((task) =>
