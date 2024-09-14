@@ -46,7 +46,7 @@ export const handleSignUp = (credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        "/http://localhost:5001/auth/signUp",
+        "http://localhost:5001/auth/signUp",
         credentials
       );
       if (!response.data.error) {

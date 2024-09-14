@@ -65,10 +65,10 @@ app.get("/", (req, res) => {
   res.send("hello from the notes server)");
 });
 
-app.use('/tasks', taskRoutes);
-app.use('/auth', authRoutes);
-app.use('/tags', tags);
-app.use('/notifications', notification);
+app.use("/tasks", taskRoutes);
+app.use("/auth", authRoutes);
+app.use("/tags", tags);
+app.use("/notifications", notification);
 
 notificationJob();
 
