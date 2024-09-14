@@ -221,7 +221,6 @@ export const handleLogout = () => {
       dispatch(setAuthenticated(false));
       return Promise.resolve(response.data);
     } catch (err) {
-      console.log(err);
       return Promise.reject(err.response.data);
     }
   };

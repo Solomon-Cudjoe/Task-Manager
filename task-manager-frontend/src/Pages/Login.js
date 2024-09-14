@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import classes from "./Login.module.css";
 import Card from "../components/Card";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
 import { handleLogin } from "../redux/actions";
 import getGoogleOAuth from "../utils/google";
 import MessageBox from "../utils/MessageBox";
@@ -30,7 +29,7 @@ const Login = ({ handleLogin }) => {
     handleLogin(credentials)
       .then((res) => {
         setFeedback(res);
-        setTimeout(() => navigate("/"), 1000); 
+        setTimeout(() => navigate("/"), 1000);
       })
       .catch((e) => {
         setFeedback(e);
@@ -38,7 +37,9 @@ const Login = ({ handleLogin }) => {
   };
   return (
     <div className={classes.login}>
-      {feedback && <MessageBox data={feedback} onClose={()=> setFeedback(null)}/>}
+      {feedback && (
+        <MessageBox data={feedback} onClose={() => setFeedback(null)} />
+      )}
       <Card>
         <form action="" className="login-form">
           <input
@@ -55,7 +56,7 @@ const Login = ({ handleLogin }) => {
             placeholder="Password"
             onChange={handleChange}
           />
-          <Link to='/forgot-password'>Forgot Password?</Link>
+          <Link to="/forgot-password">Forgot Password?</Link>
         </form>
         <button
           type="submit"
@@ -83,11 +84,6 @@ const Login = ({ handleLogin }) => {
           >
             <FcGoogle />
             <p>Google</p>
-          </button>
-
-          <button className={classes["google-btn"]}>
-            <FaFacebook />
-            <p>Facebook</p>
           </button>
         </div>
       </Card>

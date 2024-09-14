@@ -126,7 +126,6 @@ exports.login = async (req, res) => {
       });
     }
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -141,7 +140,7 @@ exports.isAuth = (req, res, next) => {
 };
 
 exports.authenticate = async (req, res) => {
-  const userId  = req.session.user;
+  const userId = req.session.user;
   const user = await User.findById(userId);
   user.password = undefined;
   user.secret = undefined;
@@ -275,10 +274,10 @@ exports.editProfile = async (req, res) => {
     }
 
     const emailTaken = await User.findOne({ email });
-    if ((userEmail !== email) && emailTaken) {
+    if (userEmail !== email && emailTaken) {
       return res.status(401).json({
-        error: "Email Taken"
-      })
+        error: "Email Taken",
+      });
     }
 
     if (firstName) {
@@ -327,14 +326,13 @@ exports.changePassword = async (req, res) => {
     const hashedPassword = await hashPassword(newPassword);
 
     user.password = hashedPassword;
-     
+
     await user.save();
     return res.status(200).json({ message: "Password changed" });
-
-  }catch (err) {
+  } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-}
+};
 
 exports.logout = async (req, res) => {
   req.session.destroy((err) => {

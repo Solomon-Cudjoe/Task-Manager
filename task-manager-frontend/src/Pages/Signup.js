@@ -103,11 +103,6 @@ const Signup = ({ handleSignUp }) => {
             <FcGoogle />
             <p>Google</p>
           </button>
-
-          <button className={classes["google-btn"]}>
-            <FaFacebook />
-            <p>Facebook</p>
-          </button>
         </div>
       </Card>
     </div>
