@@ -7,7 +7,7 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Home from "./Pages/Home";
 import { useEffect, useState, useRef } from "react";
-import { checkAuth, setTasks, setTheme, setUser } from "./redux/actions";
+import { checkAuth, setTheme } from "./redux/actions";
 import MessageBox from "./utils/MessageBox";
 import Loading from "./utils/Loading";
 import PasswordReset from "./components/PasswordReset";
@@ -62,13 +62,7 @@ function App({ checkAuth, authenticated, setTheme, theme }) {
         />
         <Route
           path="/"
-          element={
-            !authenticated ? (
-              <Navigate to={"/Login"} />
-            ) : (
-              <Home user={setUser} tasks={setTasks} />
-            )
-          }
+          element={!authenticated ? <Navigate to={"/Login"} /> : <Home />}
         />
         <Route
           path="/forgot-password/:token"

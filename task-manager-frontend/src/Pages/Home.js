@@ -12,7 +12,7 @@ import { FaRegPenToSquare } from "react-icons/fa6";
 import { FiTrash } from "react-icons/fi";
 import { FaCheck } from "react-icons/fa6";
 import AddButton from "../components/AddButton";
-import { changeStatus, fetchTasks, onDelete, setUser } from "../redux/actions";
+import { changeStatus, fetchTasks, onDelete } from "../redux/actions";
 import MessageBox from "../utils/MessageBox";
 import Loading from "../utils/Loading";
 
@@ -29,7 +29,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   useEffect(() => {
     if (effectRef.current === false) {
       setLoading(true);
-      fetchTasks()
+      fetchTasks(user._id)
         .then((res) => {
           setFilteredTasks(
             res.tasks.filter((task) =>
@@ -122,7 +122,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
         <MessageBox data={feedback} onClose={() => setFeedback(null)} />
       )}
       <div className={classes.home}>
-        <Navbar handleSearch={handleSearch} user={setUser} />
+        <Navbar handleSearch={handleSearch} user={user} />
         <Card>
           <div className={classes.filteringLinks}>
             <p
@@ -215,7 +215,6 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
             setFeedback={setFeedback}
             active={active}
             setFilteredTasks={setFilteredTasks}
-            user={setUser}
           />
           <button onClick={handleModalClose} className={classes["close-btn"]}>
             Cancel

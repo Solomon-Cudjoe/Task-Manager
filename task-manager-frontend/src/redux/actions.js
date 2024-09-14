@@ -46,7 +46,7 @@ export const handleSignUp = (credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        "https://task-manager-api-drab.vercel.app/auth/signUp",
+        "/http://localhost:5001/auth/signUp",
         credentials
       );
       if (!response.data.error) {
@@ -64,7 +64,7 @@ export const handleLogin = (credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        "https://task-manager-api-drab.vercel.app/auth/login",
+        "http://localhost:5001/auth/login",
         credentials,
         {
           withCredentials: true,
@@ -86,9 +86,12 @@ export const handleLogin = (credentials) => {
 export const checkAuth = () => {
   return async (dispatch) => {
     try {
-      const res = await axios.get(`${process.env.SERVER}/auth/authenticate`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_SERVER}/auth/authenticate`,
+        {
+          withCredentials: true,
+        }
+      );
       dispatch(setUser(res.data.user));
       dispatch(setAuthenticated(true));
       return Promise.resolve(res.data);
@@ -104,7 +107,7 @@ export const forgotPassword = (email) => {
   return async (dispatch) => {
     try {
       const res = await axios.get(
-        `${process.env.SERVER}/auth/forgot-password/${email}`,
+        `${process.env.REACT_APP_SERVER}/auth/forgot-password/${email}`,
         {
           withCredentials: true,
         }
@@ -120,7 +123,7 @@ export const resetPassword = (token, password) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `${process.env.SERVER}/auth/reset-password/${token}`,
+        `${process.env.REACT_APP_SERVER}/auth/reset-password/${token}`,
         { password }
       );
       if (!response.data.error) {
@@ -138,7 +141,7 @@ export const getVerificationToken = (email) => {
   return async (dispatch) => {
     try {
       const res = await axios.get(
-        `${process.env.SERVER}/auth/get-token/${email}`,
+        `${process.env.REACT_APP_SERVER}/auth/get-token/${email}`,
         {
           withCredentials: true,
         }
@@ -154,7 +157,7 @@ export const verifyUser = (token) => {
   return async (dispatch) => {
     try {
       const res = await axios.put(
-        `${process.env.SERVER}/auth/verify-user/${token}`,
+        `${process.env.REACT_APP_SERVER}/auth/verify-user/${token}`,
         {
           withCredentials: true,
         }
@@ -170,7 +173,7 @@ export const editUser = (userEmail, credentials) => {
   return async (dispatch) => {
     try {
       const res = await axios.put(
-        `${process.env.SERVER}/auth/${userEmail}`,
+        `${process.env.REACT_APP_SERVER}/auth/${userEmail}`,
         credentials
       );
       if (!res.data.error) {
@@ -189,7 +192,7 @@ export const changePassword = (email, password, newPassword) => {
   return async (dispatch) => {
     try {
       const res = await axios.put(
-        `${process.env.SERVER}/auth/changePassword/${email}`,
+        `${process.env.REACT_APP_SERVER}/auth/changePassword/${email}`,
         { password, newPassword }
       );
       if (!res.data.error) {
@@ -208,7 +211,7 @@ export const handleLogout = () => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        `${process.env.SERVER}/auth/logout`,
+        `${process.env.REACT_APP_SERVER}/auth/logout`,
         {},
         {
           withCredentials: true,
@@ -218,6 +221,7 @@ export const handleLogout = () => {
       dispatch(setAuthenticated(false));
       return Promise.resolve(response.data);
     } catch (err) {
+      console.log(err);
       return Promise.reject(err.response.data);
     }
   };
@@ -227,7 +231,9 @@ export const handleLogout = () => {
 export const fetchTasks = (userId) => {
   return async (dispatch) => {
     try {
-      const response = await axios.get(`${process.env.SERVER}/tasks/${userId}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVER}/tasks/${userId}`
+      );
       if (!response.data.error) {
         dispatch(setTasks(response.data.tasks));
         return Promise.resolve(response.data);
@@ -244,7 +250,7 @@ export const handleTaskCreation = (userId, credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        `https://task-manager-api-drab.vercel.app/tasks/${userId}`,
+        `http://localhost:5001/tasks/${userId}`,
         credentials
       );
       if (!response.data.error) {
@@ -263,7 +269,7 @@ export const handleTaskEdit = (userId, taskId, credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `https://task-manager-api-drab.vercel.app/tasks/${userId}/${taskId}`,
+        `http://localhost:5001/tasks/${userId}/${taskId}`,
         credentials
       );
       if (!response.data.error) {
@@ -282,7 +288,7 @@ export const changeStatus = (userId, taskId) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `${process.env.SERVER}/tasks/status/${userId}/${taskId}`,
+        `${process.env.REACT_APP_SERVER}/tasks/status/${userId}/${taskId}`,
         { status: "completed" }
       );
       if (!response.data.error) {
@@ -301,7 +307,7 @@ export const onDelete = (userId, taskId) => {
   return async (dispatch) => {
     try {
       const response = await axios.delete(
-        `${process.env.SERVER}/tasks/${userId}/${taskId}`
+        `${process.env.REACT_APP_SERVER}/tasks/${userId}/${taskId}`
       );
       if (!response.data.error) {
         dispatch(fetchTasks(userId));
@@ -320,7 +326,7 @@ export const onDelete = (userId, taskId) => {
 export const getTags = () => {
   return async (dispatch) => {
     try {
-      const response = await axios.get(`${process.env.SERVER}/tags`);
+      const response = await axios.get(`${process.env.REACT_APP_SERVER}/tags`);
       if (!response.data.error) {
         dispatch(setCategories(response.data.categories));
         return Promise.resolve(response.data);
@@ -339,7 +345,7 @@ export const getNotifications = (userId) => {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `${process.env.SERVER}/notifications/${userId}`
+        `${process.env.REACT_APP_SERVER}/notifications/${userId}`
       );
       if (!response.data.error) {
         dispatch(setNotifications(response.data.notifications));
@@ -357,7 +363,7 @@ export const readNotification = (userId, notificationId) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `${process.env.SERVER}/notifications/read/${userId}/${notificationId}`
+        `${process.env.REACT_APP_SERVER}/notifications/read/${userId}/${notificationId}`
       );
       if (!response.data.error) {
         dispatch(getNotifications(userId));
