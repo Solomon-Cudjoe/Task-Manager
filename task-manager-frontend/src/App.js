@@ -7,7 +7,7 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Home from "./Pages/Home";
 import { useEffect, useState, useRef } from "react";
-import { checkAuth, setTheme } from "./redux/actions";
+import { checkAuth, setTheme, setUser } from "./redux/actions";
 import MessageBox from "./utils/MessageBox";
 import Loading from "./utils/Loading";
 import PasswordReset from "./components/PasswordReset";
@@ -22,9 +22,11 @@ function App({ checkAuth, authenticated, setTheme, theme }) {
 
   useEffect(() => {
     if (effectRef.current === false) {
-      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDarkMode ? 'dark' : 'light')
-      console.log('running')
+      const prefersDarkMode = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      setTheme(prefersDarkMode ? "dark" : "light");
+      console.log("running");
       if (
         location.pathname !== "forgot-password" &&
         location.pathname !== "forgot-password/:token"
@@ -44,7 +46,7 @@ function App({ checkAuth, authenticated, setTheme, theme }) {
   }, [checkAuth, location, setTheme]);
 
   return (
-    <div className={`App ${theme === 'dark' && 'darkBackground'} `}>
+    <div className={`App ${theme === "dark" && "darkBackground"} `}>
       {loading && <Loading />}
       {feedback && (
         <MessageBox data={feedback} onClose={() => setFeedback(null)} />
@@ -60,7 +62,13 @@ function App({ checkAuth, authenticated, setTheme, theme }) {
         />
         <Route
           path="/"
-          element={!authenticated ? <Navigate to={"/Login"} /> : <Home />}
+          element={
+            !authenticated ? (
+              <Navigate to={"/Login"} />
+            ) : (
+              <Home user={setUser} />
+            )
+          }
         />
         <Route
           path="/forgot-password/:token"
@@ -72,7 +80,12 @@ function App({ checkAuth, authenticated, setTheme, theme }) {
         />
         <Route path="/verify/:token" element={<Verify />} />
 
-        <Route path="/account-info" element={!authenticated ? <Navigate to={"/Login"} /> : <AccountInfo />} />
+        <Route
+          path="/account-info"
+          element={
+            !authenticated ? <Navigate to={"/Login"} /> : <AccountInfo />
+          }
+        />
       </Routes>
     </div>
   );
@@ -85,7 +98,7 @@ App.propTypes = {
 
 const mapStateToProps = (state) => ({
   authenticated: state.authenticated,
-  theme: state.theme
+  theme: state.theme,
 });
 
 export default connect(mapStateToProps, { checkAuth, setTheme })(App);
