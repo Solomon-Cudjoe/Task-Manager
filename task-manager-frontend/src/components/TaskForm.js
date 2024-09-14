@@ -23,8 +23,9 @@ const TaskForm = ({
   handleTaskEdit,
   fetchTasks,
   active,
-  setFilteredTasks}) => {
-  const effectRef = useRef(false)
+  setFilteredTasks,
+}) => {
+  const effectRef = useRef(false);
   const [taskForm, setTaskForm] = useState({
     title: "",
     description: "",
@@ -34,22 +35,21 @@ const TaskForm = ({
   });
 
   useEffect(() => {
-    if(effectRef.current === false){
-      getTags()
+    if (effectRef.current === false) {
+      getTags();
       if (isEditing) {
         setTaskForm({
           title: selectedTask.title,
           description: selectedTask.description,
           dueDate: selectedTask.dueDate,
           priority: selectedTask.priority,
-          category: selectedTask.category ? selectedTask.category : null
-        })
+          category: selectedTask.category ? selectedTask.category : null,
+        });
       }
       effectRef.current = true;
     }
-    
-  },[isEditing, selectedTask, getTags, setTaskForm]);
-  
+  }, [isEditing, selectedTask, getTags, setTaskForm]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTaskForm({ ...taskForm, [name]: value });
@@ -66,7 +66,11 @@ const TaskForm = ({
         .then((response) => {
           setFeedback(response);
           fetchTasks(user._id).then((res) => {
-            setFilteredTasks(res.tasks.filter((task) => task.status.toLowerCase().includes(active.toLowerCase())))
+            setFilteredTasks(
+              res.tasks.filter((task) =>
+                task.status.toLowerCase().includes(active.toLowerCase())
+              )
+            );
           });
           handleModalClose();
         })
@@ -78,7 +82,11 @@ const TaskForm = ({
         .then((response) => {
           setFeedback(response);
           fetchTasks(user._id).then((res) => {
-            setFilteredTasks(res.tasks.filter((task) => task.status.toLowerCase().includes(active.toLowerCase())))
+            setFilteredTasks(
+              res.tasks.filter((task) =>
+                task.status.toLowerCase().includes(active.toLowerCase())
+              )
+            );
           });
           handleModalClose();
         })

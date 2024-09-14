@@ -58,3 +58,21 @@
   position: absolute;
   margin-top: 240px;
 }
+
+@media screen and (max-width: 800px) {
+  .profileCard {
+    right: 30px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .profileCard {
+    right: 30px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .profileCard {
+    right: 30px;
+  }
+}

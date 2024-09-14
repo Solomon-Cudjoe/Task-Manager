@@ -12,13 +12,20 @@
   min-height: 100vh;
 }
 
-.lightBackground {
-}
+/* .lightBackground {
+} */
 
 .darkBackground {
-  background-color: rgb(31, 48, 48);
+  background-color: #363636;
+}
+
+.darkBackground p b {
+  color: #26a69a;
 }
 
 .darkBackground2 {
-  background-color: rgb(29, 61, 61);
+  background-color: #363636;
+}
+.darkBackground2 p {
+  color: black;
 }

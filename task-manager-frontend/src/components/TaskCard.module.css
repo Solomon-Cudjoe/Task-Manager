@@ -71,16 +71,25 @@ button {
   .task-card {
     width: 90%;
   }
+  .addTask-btn {
+    margin: 20px;
+  }
 }
 
 @media screen and (max-width: 600px) {
   .task-card {
     width: 95%;
   }
+  .addTask-btn {
+    margin: 20px;
+  }
 }
 
 @media screen and (max-width: 500px) {
   .task-card {
     width: 98%;
+  }
+  .addTask-btn {
+    margin: 20px;
   }
 }

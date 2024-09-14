@@ -18,7 +18,8 @@ const Navbar = ({
   user,
   getNotifications,
   notifications,
-  setTheme, theme
+  setTheme,
+  theme,
 }) => {
   const [keyword, setKeyword] = useState("");
   const [openNotifications, setOpenNotifications] = useState(false);
@@ -31,8 +32,8 @@ const Navbar = ({
   };
 
   const toggleTheme = () => {
-    theme === 'dark' ? setTheme('light') : setTheme('dark')
-  }
+    theme === "dark" ? setTheme("light") : setTheme("dark");
+  };
 
   const handleNotifications = () => {
     setShowProfile(false);
@@ -57,9 +58,34 @@ const Navbar = ({
   };
 
   return (
-      <header className={classes.header}>
-        <nav className={classes.nav}>
-          <div className={classes.left}>
+    <header className={classes.header}>
+      <nav className={classes.nav}>
+        <div className={classes.left}>
+          <input
+            className={classes.input}
+            type="text"
+            name="search"
+            onChange={onInputChange}
+            placeholder="Search Tasks..."
+            autoComplete="false"
+          />
+          <button
+            type="submit"
+            className={classes["search-btn"]}
+            onClick={onSearchClick}
+          >
+            <GoSearch />
+          </button>
+        </div>
+        <div className={classes.leftMobile}>
+          <button
+            type="submit"
+            className={classes["search-btn"]}
+            onClick={() => setSearchClick(!searchClick)}
+          >
+            {searchClick ? <GoX /> : <GoSearch />}
+          </button>
+          <div className={searchClick ? classes.show : classes.mobileSearch}>
             <input
               className={classes.input}
               type="text"
@@ -73,85 +99,58 @@ const Navbar = ({
               className={classes["search-btn"]}
               onClick={onSearchClick}
             >
-              <GoSearch/>
+              <GoSearch />
             </button>
           </div>
-          <div className={classes.leftMobile}>
+        </div>
+
+        <div className={classes.right}>
+          <div className={classes.profile} onClick={toggleProfile}>
+            <IoPersonOutline size={40} />
+          </div>
+
+          {showProfile && <ProfileCard user={user} onClose={toggleProfile} />}
+
+          <div style={{ display: "flex", gap: "1rem" }}>
+            <button onClick={toggleTheme} className={classes["mode-btn"]}>
+              {theme === "dark" ? <GoSun size={20} /> : <GoMoon size={20} />}
+            </button>
             <button
-              type="submit"
-              className={classes["search-btn"]}
-              onClick={() => setSearchClick(!searchClick)}
+              className={classes["mode-btn"]}
+              onClick={handleNotifications}
             >
-              {searchClick ? <GoX/> : <GoSearch/>}
+              <FaBell size={20} />
             </button>
-            <div className={searchClick ? classes.show : classes.mobileSearch }>
-              <input
-                className={classes.input}
-                type="text"
-                name="search"
-                onChange={onInputChange}
-                placeholder="Search Tasks..."
-                autoComplete="false"
-              />
-              <button
-                type="submit"
-                className={classes["search-btn"]}
-                onClick={onSearchClick}
+
+            {openNotifications && (
+              <div
+                className={classes["notification-container"]}
+                style={{
+                  position: "absolute",
+                  top: "5.7rem",
+                  right: "0px",
+                  height: "auto",
+                  maxHeight: "30rem",
+                  overflowY: "auto",
+                }}
               >
-                <GoSearch/>
-              </button>
-            </div>
+                {notifications.map((not, index) => (
+                  <div
+                    key={index}
+                    className={classes.notification}
+                    style={{
+                      backgroundColor: not.status === "read" ? "red" : "#FFF",
+                    }}
+                  >
+                    <span>{` ${not.message}, kindly attend to it.`}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-
-
-          <div className={classes.right}>
-            <div className={classes.profile} onClick={toggleProfile}>
-              <IoPersonOutline size={40} />
-            </div>
-
-            {showProfile && <ProfileCard user={user} onClose={toggleProfile} />}
-
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <button onClick={toggleTheme} className={classes["mode-btn"]}>
-                {theme === 'dark' ? <GoSun size={20} /> : <GoMoon size={20}/>}
-              </button>
-              <button
-                className={classes["mode-btn"]}
-                onClick={handleNotifications}
-              >
-                <FaBell size={20} />
-              </button>
-
-              {openNotifications && (
-                <div
-                  className={classes["notification-container"]}
-                  style={{
-                    position: "absolute",
-                    top: "5.7rem",
-                    right: '0px',
-                    height: "auto",
-                    maxHeight: "30rem",
-                    overflowY: "auto",
-                  }}
-                >
-                  {notifications.map((not, index) => (
-                    <div
-                      key={index}
-                      className={classes.notification}
-                      style={{
-                        backgroundColor:
-                          not.status === "read" ? "red" : "#4ECB71",
-                      }}
-                    >
-                      <span>{` ${not.message}, kindly attend to it.`}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </nav>
-      </header>
+        </div>
+      </nav>
+    </header>
   );
 };
 
@@ -165,9 +164,7 @@ Navbar.propTypes = {
 const mapStateToProps = (state) => ({
   user: state.user,
   notifications: state.notifications,
-  theme: state.theme
+  theme: state.theme,
 });
 
-export default connect(mapStateToProps, { getNotifications, setTheme })(
-  Navbar
-);
+export default connect(mapStateToProps, { getNotifications, setTheme })(Navbar);

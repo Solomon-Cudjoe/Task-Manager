@@ -103,3 +103,30 @@ p {
   border: 1px solid #c3c0fa;
   border-color: #c3c0fa;
 }
+
+@media screen and (max-width: 800px) {
+  .task-card {
+    width: 90%;
+  }
+  .close-btn {
+    margin-top: -60px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .task-card {
+    width: 95%;
+  }
+  .close-btn {
+    margin-top: -60px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .task-card {
+    width: 98%;
+  }
+  .close-btn {
+    margin-top: -60px;
+  }
+}
