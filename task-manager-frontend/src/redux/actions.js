@@ -46,7 +46,7 @@ export const handleSignUp = (credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        "http://localhost:5001/auth/signUp",
+        `${process.env.REACT_APP_SERVER}/auth/signUp`,
         credentials
       );
       if (!response.data.error) {
@@ -64,7 +64,7 @@ export const handleLogin = (credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        "http://localhost:5001/auth/login",
+        `${process.env.REACT_APP_SERVER}/auth/login`,
         credentials,
         {
           withCredentials: true,
@@ -250,7 +250,7 @@ export const handleTaskCreation = (userId, credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        `http://localhost:5001/tasks/${userId}`,
+        `${process.env.REACT_APP_SERVER}/tasks/${userId}`,
         credentials
       );
       if (!response.data.error) {
@@ -269,7 +269,7 @@ export const handleTaskEdit = (userId, taskId, credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `http://localhost:5001/tasks/${userId}/${taskId}`,
+        `${process.env.REACT_APP_SERVER}/tasks/${userId}/${taskId}`,
         credentials
       );
       if (!response.data.error) {
