@@ -86,12 +86,9 @@ export const handleLogin = (credentials) => {
 export const checkAuth = () => {
   return async (dispatch) => {
     try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_SERVER}/auth/authenticate`,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.get(`${process.env.SERVER}/auth/authenticate`, {
+        withCredentials: true,
+      });
       dispatch(setUser(res.data.user));
       dispatch(setAuthenticated(true));
       return Promise.resolve(res.data);
