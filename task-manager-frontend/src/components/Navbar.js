@@ -8,7 +8,7 @@ import { GoSun, GoSearch, GoX, GoMoon } from "react-icons/go";
 import { FaBell } from "react-icons/fa6";
 import ProfileCard from "./ProfileCard";
 
-import { getNotifications, setTheme } from "../redux/actions";
+import { getNotifications, setTheme, setUser } from "../redux/actions";
 
 // import { IoMoonOutline } from "react-icons/io5";
 // <IoMoonOutline />
@@ -109,7 +109,9 @@ const Navbar = ({
             <IoPersonOutline size={40} />
           </div>
 
-          {showProfile && <ProfileCard user={user} onClose={toggleProfile} />}
+          {showProfile && (
+            <ProfileCard user={setUser} onClose={toggleProfile} />
+          )}
 
           <div style={{ display: "flex", gap: "1rem" }}>
             <button onClick={toggleTheme} className={classes["mode-btn"]}>
