@@ -7,7 +7,7 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Home from "./Pages/Home";
 import { useEffect, useState, useRef } from "react";
-import { checkAuth, setTheme, setUser } from "./redux/actions";
+import { checkAuth, setTasks, setTheme, setUser } from "./redux/actions";
 import MessageBox from "./utils/MessageBox";
 import Loading from "./utils/Loading";
 import PasswordReset from "./components/PasswordReset";
@@ -66,7 +66,7 @@ function App({ checkAuth, authenticated, setTheme, theme }) {
             !authenticated ? (
               <Navigate to={"/Login"} />
             ) : (
-              <Home user={setUser} />
+              <Home user={setUser} tasks={setTasks} />
             )
           }
         />
