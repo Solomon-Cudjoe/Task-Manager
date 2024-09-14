@@ -46,7 +46,7 @@ export const handleSignUp = (credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        "/http://localhost:5001/auth/signUp",
+        "https://task-manager-api-drab.vercel.app/auth/signUp",
         credentials
       );
       if (!response.data.error) {
@@ -64,7 +64,7 @@ export const handleLogin = (credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        "http://localhost:5001/auth/login",
+        "https://task-manager-api-drab.vercel.app/auth/login",
         credentials,
         {
           withCredentials: true,
@@ -104,7 +104,7 @@ export const forgotPassword = (email) => {
   return async (dispatch) => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_SERVER}/auth/forgot-password/${email}`,
+        `${process.env.SERVER}/auth/forgot-password/${email}`,
         {
           withCredentials: true,
         }
@@ -120,7 +120,7 @@ export const resetPassword = (token, password) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_SERVER}/auth/reset-password/${token}`,
+        `${process.env.SERVER}/auth/reset-password/${token}`,
         { password }
       );
       if (!response.data.error) {
@@ -138,7 +138,7 @@ export const getVerificationToken = (email) => {
   return async (dispatch) => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_SERVER}/auth/get-token/${email}`,
+        `${process.env.SERVER}/auth/get-token/${email}`,
         {
           withCredentials: true,
         }
@@ -154,7 +154,7 @@ export const verifyUser = (token) => {
   return async (dispatch) => {
     try {
       const res = await axios.put(
-        `${process.env.REACT_APP_SERVER}/auth/verify-user/${token}`,
+        `${process.env.SERVER}/auth/verify-user/${token}`,
         {
           withCredentials: true,
         }
@@ -170,7 +170,7 @@ export const editUser = (userEmail, credentials) => {
   return async (dispatch) => {
     try {
       const res = await axios.put(
-        `${process.env.REACT_APP_SERVER}/auth/${userEmail}`,
+        `${process.env.SERVER}/auth/${userEmail}`,
         credentials
       );
       if (!res.data.error) {
@@ -189,7 +189,7 @@ export const changePassword = (email, password, newPassword) => {
   return async (dispatch) => {
     try {
       const res = await axios.put(
-        `${process.env.REACT_APP_SERVER}/auth/changePassword/${email}`,
+        `${process.env.SERVER}/auth/changePassword/${email}`,
         { password, newPassword }
       );
       if (!res.data.error) {
@@ -208,7 +208,7 @@ export const handleLogout = () => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVER}/auth/logout`,
+        `${process.env.SERVER}/auth/logout`,
         {},
         {
           withCredentials: true,
@@ -227,9 +227,7 @@ export const handleLogout = () => {
 export const fetchTasks = (userId) => {
   return async (dispatch) => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_SERVER}/tasks/${userId}`
-      );
+      const response = await axios.get(`${process.env.SERVER}/tasks/${userId}`);
       if (!response.data.error) {
         dispatch(setTasks(response.data.tasks));
         return Promise.resolve(response.data);
@@ -246,7 +244,7 @@ export const handleTaskCreation = (userId, credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        `http://localhost:5001/tasks/${userId}`,
+        `https://task-manager-api-drab.vercel.app/tasks/${userId}`,
         credentials
       );
       if (!response.data.error) {
@@ -265,7 +263,7 @@ export const handleTaskEdit = (userId, taskId, credentials) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `http://localhost:5001/tasks/${userId}/${taskId}`,
+        `https://task-manager-api-drab.vercel.app/tasks/${userId}/${taskId}`,
         credentials
       );
       if (!response.data.error) {
@@ -284,7 +282,7 @@ export const changeStatus = (userId, taskId) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_SERVER}/tasks/status/${userId}/${taskId}`,
+        `${process.env.SERVER}/tasks/status/${userId}/${taskId}`,
         { status: "completed" }
       );
       if (!response.data.error) {
@@ -303,7 +301,7 @@ export const onDelete = (userId, taskId) => {
   return async (dispatch) => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_SERVER}/tasks/${userId}/${taskId}`
+        `${process.env.SERVER}/tasks/${userId}/${taskId}`
       );
       if (!response.data.error) {
         dispatch(fetchTasks(userId));
@@ -322,7 +320,7 @@ export const onDelete = (userId, taskId) => {
 export const getTags = () => {
   return async (dispatch) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_SERVER}/tags`);
+      const response = await axios.get(`${process.env.SERVER}/tags`);
       if (!response.data.error) {
         dispatch(setCategories(response.data.categories));
         return Promise.resolve(response.data);
@@ -341,7 +339,7 @@ export const getNotifications = (userId) => {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_SERVER}/notifications/${userId}`
+        `${process.env.SERVER}/notifications/${userId}`
       );
       if (!response.data.error) {
         dispatch(setNotifications(response.data.notifications));
@@ -359,7 +357,7 @@ export const readNotification = (userId, notificationId) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_SERVER}/notifications/read/${userId}/${notificationId}`
+        `${process.env.SERVER}/notifications/read/${userId}/${notificationId}`
       );
       if (!response.data.error) {
         dispatch(getNotifications(userId));
