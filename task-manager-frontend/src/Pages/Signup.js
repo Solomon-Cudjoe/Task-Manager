@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import classes from "./Login.module.css";
 import Card from "../components/Card";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
 import getGoogleOAuth from "../utils/google";
 import { handleSignUp } from "../redux/actions";
 

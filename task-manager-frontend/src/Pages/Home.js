@@ -24,21 +24,25 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [selectedTask, setSeletedTask] = useState({});
-  const [active, setActive] = useState('pending');
+  const [active, setActive] = useState("pending");
 
   useEffect(() => {
     if (effectRef.current === false) {
       setLoading(true);
       fetchTasks(user._id)
         .then((res) => {
-          setFilteredTasks(res.tasks.filter((task) => task.status.toLowerCase().includes(active.toLowerCase())));
+          setFilteredTasks(
+            res.tasks.filter((task) =>
+              task.status.toLowerCase().includes(active.toLowerCase())
+            )
+          );
           setLoading(false);
         })
         .catch((e) => {
           setLoading(false);
           setFeedback(e);
         });
-        
+
       effectRef.current = true;
     }
   }, [fetchTasks, user, active]);
@@ -65,9 +69,11 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
   };
 
   const filterStatus = (type) => {
-    const newTasks = tasks.filter((task) => task.status.toLowerCase().includes(type.toLowerCase()));
+    const newTasks = tasks.filter((task) =>
+      task.status.toLowerCase().includes(type.toLowerCase())
+    );
     setFilteredTasks(newTasks);
-  }
+  };
 
   const onEditClick = (task) => {
     setSeletedTask(task);
@@ -78,7 +84,13 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
     changeStatus(user._id, taskId)
       .then((res) => {
         setFeedback(res);
-        fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks.filter((task) => task.status.toLowerCase().includes(active.toLowerCase()))));
+        fetchTasks(user._id).then((res) =>
+          setFilteredTasks(
+            res.tasks.filter((task) =>
+              task.status.toLowerCase().includes(active.toLowerCase())
+            )
+          )
+        );
       })
       .catch((e) => {
         console.log(e);
@@ -90,7 +102,13 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
     onDelete(user._id, taskId)
       .then((res) => {
         setFeedback(res);
-        fetchTasks(user._id).then((res) => setFilteredTasks(res.tasks.filter((task) => task.status.toLowerCase().includes(active.toLowerCase()))));
+        fetchTasks(user._id).then((res) =>
+          setFilteredTasks(
+            res.tasks.filter((task) =>
+              task.status.toLowerCase().includes(active.toLowerCase())
+            )
+          )
+        );
       })
       .catch((e) => {
         setFeedback(e);
@@ -107,21 +125,30 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
         <Navbar handleSearch={handleSearch} user={user} />
         <Card>
           <div className={classes.filteringLinks}>
-            <p 
-              className={active === '' && classes.active}
-              onClick={() => { filterStatus(''); setActive('') }}
+            <p
+              className={active === "" && classes.active}
+              onClick={() => {
+                filterStatus("");
+                setActive("");
+              }}
             >
               All
             </p>
-            <p 
-              className={active === 'pending' && classes.active} 
-              onClick={() => { filterStatus('pending'); setActive('pending') }}
+            <p
+              className={active === "pending" && classes.active}
+              onClick={() => {
+                filterStatus("pending");
+                setActive("pending");
+              }}
             >
               Pending
             </p>
-            <p 
-              className={active === 'completed' && classes.active} 
-              onClick={() => { filterStatus('completed'); setActive('completed') }}
+            <p
+              className={active === "completed" && classes.active}
+              onClick={() => {
+                filterStatus("completed");
+                setActive("completed");
+              }}
             >
               Completed
             </p>
@@ -148,7 +175,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
                 </div>
                 <div className={classes.actions}>
                   <button
-                    style={{margin: 0}}
+                    style={{ margin: 0 }}
                     className={classes["edit-btn"]}
                     onClick={() => onEditClick(task)}
                   >
@@ -156,7 +183,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
                   </button>
 
                   <button
-                    style={{margin: 0}}
+                    style={{ margin: 0 }}
                     className={classes["delete-btn"]}
                     onClick={() => handleDelete(task._id)}
                   >
@@ -164,7 +191,7 @@ const Home = ({ user, tasks, fetchTasks, changeStatus, onDelete }) => {
                   </button>
 
                   <button
-                    style={{margin: 0}}
+                    style={{ margin: 0 }}
                     className={classes["check-btn"]}
                     onClick={() => onCheckClick(task._id)}
                   >
