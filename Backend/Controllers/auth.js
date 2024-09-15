@@ -93,7 +93,7 @@ exports.google = async (req, res) => {
 
     res.cookie('auth_token', token, {
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 60 * 24 * 3
     });
@@ -130,7 +130,7 @@ exports.login = async (req, res) => {
       console.log(token);
       res.cookie('auth_token', token, {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 * 3
       });
@@ -368,7 +368,7 @@ exports.changePassword = async (req, res) => {
 exports.logout = (req, res) => {
   res.clearCookie('auth_token', {
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production'
   });
   res.status(200).json({ message: "Logged out" });
