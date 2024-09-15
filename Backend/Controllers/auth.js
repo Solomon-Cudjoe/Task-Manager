@@ -119,7 +119,9 @@ exports.login = async (req, res) => {
       exists.password = undefined;
       exists.secret = undefined;
       const { password, secret, ...rest } = exists._doc;
+      console.log(rest._id);
       req.session.user = rest._id;
+
       return res.status(200).json({
         message: "Login Successful",
         user: rest,
