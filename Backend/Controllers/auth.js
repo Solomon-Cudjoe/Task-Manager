@@ -89,7 +89,14 @@ exports.google = async (req, res) => {
       return res.status(409).json({ error: "User not found" });
     }
 
-    req.session.user = user._id;
+    const token = generateToken(user, 'auth', '3d')
+
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 3
+    });
     res.redirect(process.env.FRONTEND_URL);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -99,7 +106,6 @@ exports.google = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
     if (!email) {
       return res.status(404).json({ error: "Email is required" });
     } else if (!password || password.length < 8) {
@@ -119,7 +125,15 @@ exports.login = async (req, res) => {
       exists.password = undefined;
       exists.secret = undefined;
       const { password, secret, ...rest } = exists._doc;
-      req.session.user = rest._id;
+
+      const token = generateToken(rest, 'auth', '3d')
+      console.log(token);
+      res.cookie('auth_token', token, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 60 * 24 * 3
+      });
       return res.status(200).json({
         message: "Login Successful",
         user: rest,
@@ -130,24 +144,40 @@ exports.login = async (req, res) => {
   }
 };
 
-//auth middleware
-exports.isAuth = (req, res, next) => {
-  console.log(req.session);
-  if (req.session.user) {
-    next();
-  } else {
+exports.isAuth = async (req, res, next) => {
+  console.log({cookie: req.cookies });
+  const token = req.cookies.auth_token; 
+
+  if (!token) {
     return res.status(403).json({ error: "Not authenticated" });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded._id); 
+
+    if (!user) {
+      return res.status(403).json({ error: "User not found" });
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    return res.status(403).json({ error: "Invalid or expired token" });
   }
 };
 
 exports.authenticate = async (req, res) => {
-  const userId = req.session.user;
-  const user = await User.findById(userId);
-  user.password = undefined;
-  user.secret = undefined;
-  const { password, secret, ...rest } = user._doc;
-  return res.status(200).json({ message: "Authenticated", user: rest });
+  if (!req.user) {
+    return res.status(403).json({ error: "Not authenticated" });
+  }
+
+  const { password, secret, ...user } = req.user._doc;
+
+  return res.status(200).json({
+    message: "Authenticated",
+    user
+  });
 };
+
 
 exports.getToken = async (req, res) => {
   try {
@@ -335,11 +365,12 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-exports.logout = async (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to logout" });
-    }
-    return res.status(200).json({ message: "Logout successful" });
+exports.logout = (req, res) => {
+  res.clearCookie('auth_token', {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production'
   });
+  res.status(200).json({ message: "Logged out" });
 };
+

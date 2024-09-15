@@ -90,8 +90,6 @@ exports.oauth = async (code) => {
     redirect_uri: process.env.REDIRECT_URL,
     grant_type: "authorization_code",
   };
-
-  console.log(values);
   try {
     const res = await axios.post(url, qs.stringify(values), {
       "Content-Type": "application/x-www-form-urlencoded",
