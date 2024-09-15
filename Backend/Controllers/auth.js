@@ -94,7 +94,7 @@ exports.google = async (req, res) => {
     res.cookie('auth_token', token, {
       httpOnly: true,
       sameSite: 'none',
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
       maxAge: 1000 * 60 * 60 * 24 * 3
     });
     res.redirect(process.env.FRONTEND_URL);
@@ -131,7 +131,7 @@ exports.login = async (req, res) => {
       res.cookie('auth_token', token, {
         httpOnly: true,
         sameSite: 'none',
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         maxAge: 1000 * 60 * 60 * 24 * 3
       });
       return res.status(200).json({
@@ -369,7 +369,7 @@ exports.logout = (req, res) => {
   res.clearCookie('auth_token', {
     httpOnly: true,
     sameSite: 'none',
-    secure: process.env.NODE_ENV === 'production'
+    secure: true
   });
   res.status(200).json({ message: "Logged out" });
 };
