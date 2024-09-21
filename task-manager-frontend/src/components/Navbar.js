@@ -8,7 +8,7 @@ import { AiFillEye, AiOutlineExclamationCircle } from 'react-icons/ai';
 import { FaBell, FaTrash } from "react-icons/fa6";
 import ProfileCard from "./ProfileCard";
 
-import { getNotifications, onNotificationDelete, readNotification, setTheme, setUser } from "../redux/actions";
+import { getNotifications, onNotificationDelete, readNotification, setTheme, setUser, clearNotifications } from "../redux/actions";
 
 // import { IoMoonOutline } from "react-icons/io5";
 // <IoMoonOutline />
@@ -21,7 +21,8 @@ const Navbar = ({
   setTheme,
   theme,
   readNotification,
-  onNotificationDelete
+  onNotificationDelete,
+  clearNotifications
 }) => {
   const [keyword, setKeyword] = useState("");
   const [openNotifications, setOpenNotifications] = useState(false);
@@ -71,6 +72,10 @@ const Navbar = ({
 
   const handleDel = (id) => {
     onNotificationDelete(user._id, id).then(() => getNotifications(user._id));
+  }
+
+  const handleClear = () => {
+    clearNotifications(user._id).then(() => getNotifications(user._id));
   }
 
   return (
@@ -151,9 +156,12 @@ const Navbar = ({
                   height: "auto",
                   maxHeight: "30rem",
                   overflowY: "auto",
-                  cursor: "pointer"
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column"
                 }}
               >
+                { notifications.length !== 0 && <p onClick={handleClear} className={classes["clear"]}>Clear All</p> }
                 {notifications.length !== 0 ? (
                   notifications.map((not, index) => (
                     <div
@@ -209,7 +217,8 @@ Navbar.propTypes = {
   user: PropTypes.object,
   notifications: PropTypes.array,
   readNotification: PropTypes.func,
-  onNotificationDelete: PropTypes.func
+  onNotificationDelete: PropTypes.func,
+  clearNotifications: PropTypes.func
 };
 
 const mapStateToProps = (state) => ({
@@ -218,4 +227,4 @@ const mapStateToProps = (state) => ({
   theme: state.theme,
 });
 
-export default connect(mapStateToProps, { getNotifications, setTheme, readNotification, onNotificationDelete })(Navbar);
+export default connect(mapStateToProps, { getNotifications, setTheme, readNotification, onNotificationDelete, clearNotifications })(Navbar);
