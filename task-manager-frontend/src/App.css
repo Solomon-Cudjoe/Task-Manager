@@ -3,6 +3,27 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+  scrollbar-gutter: 5px;
+  scrollbar-arrow-color: transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
 }
 
 .App {
@@ -10,6 +31,8 @@
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
+  max-height: 100vh;
+  height: 100vh;
 }
 
 /* .lightBackground {

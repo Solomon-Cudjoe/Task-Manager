@@ -98,7 +98,7 @@ const TaskForm = ({
 
   return (
     <div className={classes.task}>
-      <h1 style={{ color: "#6c63ff", textAlign: "center" }}>Add New Task</h1>
+      <h1 style={{ color: "#6c63ff", textAlign: "center" }}> {isEditing ? 'Edit Task' : "Add New Task" }</h1>
       <form>
         <input
           type="text"

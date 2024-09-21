@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classes from "./Navbar.module.css";
 import { IoPersonOutline } from "react-icons/io5";
 import { GoSun, GoSearch, GoX, GoMoon } from "react-icons/go";
-
-import { FaBell } from "react-icons/fa6";
+import { AiFillEye, AiOutlineExclamationCircle } from 'react-icons/ai';
+import { FaBell, FaTrash } from "react-icons/fa6";
 import ProfileCard from "./ProfileCard";
 
-import { getNotifications, setTheme, setUser } from "../redux/actions";
+import { getNotifications, onNotificationDelete, readNotification, setTheme, setUser } from "../redux/actions";
 
 // import { IoMoonOutline } from "react-icons/io5";
 // <IoMoonOutline />
@@ -20,11 +20,17 @@ const Navbar = ({
   notifications,
   setTheme,
   theme,
+  readNotification,
+  onNotificationDelete
 }) => {
   const [keyword, setKeyword] = useState("");
   const [openNotifications, setOpenNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [searchClick, setSearchClick] = useState(false);
+
+  useEffect(() => {
+    getNotifications(user._id);
+  },[user, getNotifications])
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
@@ -56,6 +62,16 @@ const Navbar = ({
   const onSearchClick = () => {
     handleSearch(keyword);
   };
+
+  const handleRead = (notification) => {
+    if (notification.status === "unread" || !notification.status) {
+      readNotification(user._id, notification._id).then(() => getNotifications(user._id));
+    };
+  }
+
+  const handleDel = (id) => {
+    onNotificationDelete(user._id, id).then(() => getNotifications(user._id));
+  }
 
   return (
     <header className={classes.header}>
@@ -117,13 +133,14 @@ const Navbar = ({
             <button onClick={toggleTheme} className={classes["mode-btn"]}>
               {theme === "dark" ? <GoSun size={20} /> : <GoMoon size={20} />}
             </button>
-            <button
-              className={classes["mode-btn"]}
-              onClick={handleNotifications}
-            >
+            <button className={classes["mode-btn"]} onClick={handleNotifications}>
               <FaBell size={20} />
+              {notifications.filter(not => not.status !== "read").length > 0 && (
+                <span className={classes["badge"]}>
+                  {notifications.filter(not => not.status !== "read").length}
+                </span>
+              )}
             </button>
-
             {openNotifications && (
               <div
                 className={classes["notification-container"]}
@@ -134,19 +151,49 @@ const Navbar = ({
                   height: "auto",
                   maxHeight: "30rem",
                   overflowY: "auto",
+                  cursor: "pointer"
                 }}
               >
-                {notifications.map((not, index) => (
-                  <div
-                    key={index}
-                    className={classes.notification}
-                    style={{
-                      backgroundColor: not.status === "read" ? "red" : "#FFF",
-                    }}
-                  >
-                    <span>{` ${not.message}, kindly attend to it.`}</span>
-                  </div>
-                ))}
+                {notifications.length !== 0 ? (
+                  notifications.map((not, index) => (
+                    <div
+                      key={index}
+                      className={classes.notification}
+                      style={{
+                        backgroundColor: not.status === "read" ? "#f0f0f0" : "#ffe6e6",
+                        borderLeft: not.status === "read" ? "4px solid #ccc" : "4px solid red",
+                        padding: '10px',
+                        margin: '5px 0',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        transition: 'background-color 0.3s',
+                      }}
+                      title={not.title}
+                      onClick={() => handleRead(not)}
+                    >
+                      <span style={{ marginRight: '10px' }}>
+                        {not.status === "read" ? (
+                          <AiFillEye style={{ color: '#999' }} />
+                        ) : (
+                          <AiOutlineExclamationCircle style={{ color: 'red' }} />
+                        )}
+                      </span>
+                      <span>{`${not.message}, kindly attend to it.`}</span>
+                      <span>
+                        <FaTrash style={{ zIndex: 300 }} size={20} onClick={() => handleDel(not._id)} />
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p style={{
+                    backgroundColor: "#f0f0f0",
+                    paddingInline: "1rem",
+                    paddingBlock: ".5rem",
+                    width: "320px",
+                    textAlign: "center"
+                  }}>No notifications available</p>
+                )}
               </div>
             )}
           </div>
@@ -161,6 +208,8 @@ Navbar.propTypes = {
   getNotifications: PropTypes.func,
   user: PropTypes.object,
   notifications: PropTypes.array,
+  readNotification: PropTypes.func,
+  onNotificationDelete: PropTypes.func
 };
 
 const mapStateToProps = (state) => ({
@@ -169,4 +218,4 @@ const mapStateToProps = (state) => ({
   theme: state.theme,
 });
 
-export default connect(mapStateToProps, { getNotifications, setTheme })(Navbar);
+export default connect(mapStateToProps, { getNotifications, setTheme, readNotification, onNotificationDelete })(Navbar);

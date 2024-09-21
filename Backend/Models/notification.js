@@ -16,7 +16,8 @@ const notificationSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["read", "unread"]
+        enum: ["read", "unread"],
+        default: "unread"
     }
 })
 

@@ -1,12 +1,15 @@
 const User = require("../Models/auth");
 const Task = require("../Models/task");
 const Category = require("../Models/category");
+const { validDate } = require("../Helpers/auth");
 
 exports.addTask = async (req, res) => {
   const { userId } = req.params;
-  console.log(req.body);
   const { title, description, dueDate, priority } = req.body;
   const user = await User.findById(userId);
+  if (!validDate(dueDate)) {
+    return res.status(401).json({error: "Can't use a past date"})
+  }
   if (!user) {
     return res.status(404).json({ error: "User not found" });
   }
@@ -68,9 +71,10 @@ exports.filterWithPriority = async (req, res) => {
 exports.editTask = async (req, res) => {
   const { userId, taskId } = req.params;
   const { title, description, dueDate, priority, category } = req.body;
-  console.log({ title, description, dueDate, priority, category });
-
   const user = await User.findById(userId);
+  if (!validDate(dueDate)) {
+    return res.status(401).json({error: "Can't use a past date"})
+  }
   if (!user) {
     return res.status(404).json({ error: "User not found" });
   }

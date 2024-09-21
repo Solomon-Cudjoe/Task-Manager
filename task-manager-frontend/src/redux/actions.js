@@ -63,6 +63,7 @@ export const handleSignUp = (credentials) => {
 export const handleLogin = (credentials) => {
   return async (dispatch) => {
     try {
+      console.log(process.env.REACT_APP_SERVER)
       const response = await axios.post(
         `${process.env.REACT_APP_SERVER}/auth/login`,
         credentials,
@@ -367,6 +368,23 @@ export const readNotification = (userId, notificationId) => {
       );
       if (!response.data.error) {
         dispatch(getNotifications(userId));
+      } else {
+        return Promise.reject(response.data);
+      }
+    } catch (err) {
+      return Promise.reject(err.response.data);
+    }
+  };
+};
+
+export const onNotificationDelete = (userId, notificationId) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_SERVER}/notifications/${userId}/${notificationId}`
+      );
+      if (!response.data.error) {
+        return Promise.resolve(response.data);
       } else {
         return Promise.reject(response.data);
       }

@@ -10,6 +10,16 @@ exports.generateToken = (user, type, expiresIn) => {
   });
 };
 
+exports.validDate = (date) => {
+  const current = new Date();
+  const enteredDate = new Date(date);
+  if (enteredDate.setHours(0, 0, 0, 0) > current.setHours(0, 0, 0, 0)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 exports.hashPassword = (password) => {
   return new Promise((resolve, reject) => {
     bcrypt.genSalt(12, (err, salt) => {
@@ -41,7 +51,6 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.sendVerificationEmail = async (user, token) => {
-  console.log(token);
   const uri = `${process.env.FRONTEND_URL}/verify/${token}`;
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,
@@ -53,15 +62,13 @@ exports.sendVerificationEmail = async (user, token) => {
         `,
   };
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log(info);
+    await transporter.sendMail(mailOptions);
   } catch (err) {
     console.error("Error sending email", err);
   }
 };
 
 exports.sendResetEmail = async (user, token) => {
-  console.log(process.env.EMAIL_USERNAME, process.env.EMAIL_PASSWORD);
   const uri = `${process.env.FRONTEND_URL}/forgot-password/${token}`;
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,
@@ -73,8 +80,7 @@ exports.sendResetEmail = async (user, token) => {
         `,
   };
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log(info);
+    await transporter.sendMail(mailOptions);
   } catch (err) {
     console.error("Error sending email", err);
   }
